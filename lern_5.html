@@ -1,0 +1,3278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lern — Teacher's Aide</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ─── Reset & Base ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue: #2563eb;
+  --blue-light: #dbeafe;
+  --blue-dark: #1d4ed8;
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --surface2: #f1f4f8;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --text2: #64748b;
+  --text3: #94a3b8;
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.07);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --nav-h: 68px;
+}
+
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface2: #293548;
+  --border: #334155;
+  --text: #f1f5f9;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --blue-light: #1e3a6e;
+  --shadow: 0 2px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+html { font-size: 16px; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background 0.25s, color 0.25s;
+  line-height: 1.6;
+}
+
+/* ─── Utilities ─── */
+.hidden { display: none !important; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+.text-sm { font-size: 14px; }
+.text-lg { font-size: 18px; }
+.text-xl { font-size: 22px; }
+.font-bold { font-weight: 700; }
+.font-800 { font-weight: 800; }
+
+/* ─── Buttons ─── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--blue);
+  color: white;
+}
+.btn-primary:hover { background: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(37,99,235,0.35); }
+.btn-secondary {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}
+.btn-secondary:hover { background: var(--border); }
+.btn-ghost {
+  background: transparent;
+  color: var(--text2);
+  border: 1.5px solid var(--border);
+}
+.btn-ghost:hover { background: var(--surface2); color: var(--text); }
+.btn-danger { background: #fee2e2; color: var(--danger); }
+.btn-danger:hover { background: #fecaca; }
+.btn-sm { padding: 8px 14px; font-size: 13px; }
+.btn-lg { padding: 16px 28px; font-size: 17px; border-radius: var(--radius); }
+.btn-icon { padding: 8px; border-radius: 6px; }
+
+/* ─── Inputs ─── */
+.input, .select, .textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--surface);
+  transition: border-color 0.18s, box-shadow 0.18s;
+  outline: none;
+}
+.input:focus, .select:focus, .textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+}
+.textarea { resize: vertical; min-height: 80px; }
+.label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text2);
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.form-group { margin-bottom: 20px; }
+
+/* ─── Cards ─── */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 28px;
+}
+
+/* ─── Screen System ─── */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* ═══════════════════════════════════════
+   GATE SCREEN
+═══════════════════════════════════════ */
+#screen-gate {
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #f0f6ff 0%, #fafbff 50%, #f5f0ff 100%);
+}
+
+[data-theme="dark"] #screen-gate {
+  background: linear-gradient(135deg, #0f1629 0%, #0f172a 50%, #150f29 100%);
+}
+
+.gate-card {
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+}
+
+.gate-logo {
+  font-size: 42px;
+  font-weight: 900;
+  color: var(--blue);
+  letter-spacing: -1px;
+  margin-bottom: 4px;
+}
+
+.gate-tagline {
+  font-size: 13px;
+  color: var(--text3);
+  margin-bottom: 36px;
+  font-weight: 600;
+}
+
+.gate-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.gate-desc {
+  font-size: 15px;
+  color: var(--text2);
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.gate-input-wrap { position: relative; }
+.gate-input-wrap .input { padding-right: 52px; font-size: 14px; letter-spacing: 0.05em; }
+.gate-eye {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text3);
+  font-size: 18px;
+  padding: 4px;
+}
+.gate-error {
+  background: #fee2e2;
+  color: var(--danger);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 12px;
+  display: none;
+}
+.gate-hint {
+  font-size: 13px;
+  color: var(--text3);
+  margin-top: 16px;
+}
+.gate-hint a { color: var(--blue); font-weight: 700; }
+
+/* ═══════════════════════════════════════
+   ONBOARDING SCREEN
+═══════════════════════════════════════ */
+#screen-onboard {
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg);
+}
+
+.onboard-card {
+  width: 100%;
+  max-width: 560px;
+}
+
+.onboard-steps {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+  justify-content: center;
+}
+
+.step-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: all 0.25s;
+}
+.step-dot.active { background: var(--blue); transform: scale(1.3); }
+.step-dot.done { background: var(--blue); opacity: 0.4; }
+
+.onboard-step { display: none; }
+.onboard-step.active { display: block; }
+
+.onboard-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.onboard-subtitle {
+  font-size: 15px;
+  color: var(--text2);
+  margin-bottom: 28px;
+}
+
+.chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.chip {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--text2);
+}
+.chip:hover { border-color: var(--blue); color: var(--blue); }
+.chip.selected { background: var(--blue); border-color: var(--blue); color: white; }
+
+.onboard-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+
+/* ═══════════════════════════════════════
+   MAIN APP
+═══════════════════════════════════════ */
+#screen-app {
+  display: none;
+  flex-direction: column;
+  min-height: 100vh;
+}
+#screen-app.active { display: flex; }
+
+/* Nav */
+.nav {
+  height: var(--nav-h);
+  background: var(--surface);
+  border-bottom: 1.5px solid var(--border);
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-logo {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--blue);
+  letter-spacing: -0.5px;
+}
+
+.nav-right { display: flex; align-items: center; gap: 10px; }
+
+.nav-btn {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text2);
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-btn:hover { color: var(--text); background: var(--border); }
+
+.theme-toggle {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  transition: all 0.15s;
+}
+.theme-toggle:hover { background: var(--border); }
+
+/* Main Content */
+.app-main {
+  flex: 1;
+  padding: 32px 28px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Dashboard */
+#panel-dashboard { display: block; }
+
+.dash-greeting {
+  margin-bottom: 32px;
+}
+.dash-greeting h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.dash-greeting p { font-size: 16px; color: var(--text2); }
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.tool-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--card-color, var(--blue));
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.tool-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--card-color, var(--blue));
+}
+.tool-card-icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+  display: block;
+}
+.tool-card h3 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.tool-card p {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.5;
+}
+.tool-card-badge {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: var(--blue-light);
+  color: var(--blue);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Tool Panels */
+.tool-panel { display: none; }
+.tool-panel.active { display: block; }
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.back-btn {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text2);
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.back-btn:hover { color: var(--text); background: var(--border); }
+.panel-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+/* Output Area */
+.output-box {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-top: 24px;
+  min-height: 200px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text);
+  white-space: pre-wrap;
+  display: none;
+}
+.output-box.visible { display: block; }
+.output-box h1, .output-box h2, .output-box h3 {
+  margin: 12px 0 6px;
+  font-weight: 800;
+  color: var(--text);
+}
+.output-box h2 { font-size: 18px; color: var(--blue); }
+.output-box h3 { font-size: 16px; }
+.output-box p { margin-bottom: 8px; }
+.output-box ul, .output-box ol { margin: 6px 0 12px 20px; }
+.output-box li { margin-bottom: 4px; }
+.output-box strong { font-weight: 800; }
+.output-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+/* Loading spinner */
+.loading-wrap {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 0;
+  color: var(--text2);
+  font-weight: 600;
+  font-size: 15px;
+}
+.loading-wrap.visible { display: flex; }
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--border);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Error box */
+.error-box {
+  background: #fee2e2;
+  border: 1.5px solid #fecaca;
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  color: var(--danger);
+  font-weight: 600;
+  font-size: 14px;
+  margin-top: 16px;
+  display: none;
+}
+.error-box.visible { display: block; }
+
+/* ═══════════════════════════════════════
+   SEAT TOOL — NEW LAYOUT
+═══════════════════════════════════════ */
+
+/* Three-column layout */
+.seat-workspace {
+  display: grid;
+  grid-template-columns: 220px 1fr 220px;
+  gap: 16px;
+  align-items: start;
+  min-height: 520px;
+}
+
+/* Left panel — relationships slide-out trigger */
+.seat-left {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Right panel */
+.seat-right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Center */
+.seat-center {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Toolbar strip above grid */
+.seat-toolbar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+}
+.seat-toolbar-group { display: flex; gap: 4px; align-items: center; }
+.seat-toolbar-sep { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }
+.seat-info { font-size: 12px; color: var(--text3); font-weight: 700; margin-left: auto; }
+
+/* Grid */
+.seat-grid-wrap {
+  overflow: auto;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.seat-label-row { display: flex; gap: 5px; margin-bottom: 5px; padding-left: 28px; }
+.seat-col-label { width: 88px; flex-shrink: 0; text-align: center; font-size: 11px; font-weight: 800; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+.seat-row { display: flex; gap: 5px; margin-bottom: 5px; align-items: center; }
+.seat-row-label { width: 22px; flex-shrink: 0; font-size: 11px; font-weight: 800; color: var(--text3); text-align: right; padding-right: 6px; }
+
+.seat-cell {
+  width: 88px;
+  height: 46px;
+  flex-shrink: 0;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  padding: 3px 5px;
+  overflow: hidden;
+}
+.seat-cell:hover { border-color: var(--blue); background: var(--blue-light); }
+.seat-cell.has-name { background: var(--surface); border-color: var(--border); }
+.seat-cell.has-note::after { content: '📌'; position: absolute; top: 2px; right: 3px; font-size: 9px; }
+.seat-cell.drag-over { border-color: var(--blue); background: var(--blue-light); border-style: dashed; }
+.seat-cell[draggable="true"] { cursor: grab; }
+.seat-cell.drop-target { border-color: var(--blue); border-style: dashed; background: var(--blue-light); }
+
+.seat-cell-input {
+  display: none;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text);
+  outline: none;
+  padding: 3px;
+}
+.seat-cell.editing .seat-cell-text { display: none; }
+.seat-cell.editing .seat-cell-input { display: block; }
+
+/* Name list (right panel bottom) */
+.seat-name-list {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.seat-name-list h4 {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+.seat-name-add {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.seat-name-add input {
+  flex: 1;
+  padding: 7px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--surface2);
+  outline: none;
+}
+.seat-name-add input:focus { border-color: var(--blue); }
+.seat-name-add button { padding: 7px 12px; border-radius: 6px; border: none; background: var(--blue); color: white; font-weight: 800; font-size: 16px; cursor: pointer; }
+.seat-name-items { display: flex; flex-direction: column; gap: 5px; max-height: 220px; overflow-y: auto; }
+.seat-name-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: grab;
+  user-select: none;
+  transition: all 0.12s;
+}
+.seat-name-item:hover { border-color: var(--blue); background: var(--blue-light); }
+.seat-name-item.placed { opacity: 0.4; cursor: default; }
+.seat-name-item .del-btn { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 14px; padding: 0 2px; line-height: 1; }
+.seat-name-item .del-btn:hover { color: var(--danger); }
+
+/* Dynamics meter (right panel top) */
+.seat-meter {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.seat-meter h4 {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.seat-meter-desc {
+  font-size: 11px;
+  color: var(--text3);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.seat-meter-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text3);
+  margin-bottom: 4px;
+}
+.seat-meter input[type=range] {
+  width: 100%;
+  accent-color: var(--blue);
+  cursor: pointer;
+}
+.seat-meter-val {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--blue);
+  margin: 6px 0 10px;
+}
+.seat-optimize-btn {
+  width: 100%;
+  padding: 10px;
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.seat-optimize-btn:hover { background: var(--blue-dark); }
+
+/* Relationships panel (left) */
+.seat-rel-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.15s;
+}
+.seat-rel-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+/* Groups modal — full screen overlay */
+.rel-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: none;
+  flex-direction: column;
+  background: var(--bg);
+}
+.rel-modal.open { display: flex; }
+
+.rel-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 28px;
+  background: var(--surface);
+  border-bottom: 1.5px solid var(--border);
+  flex-shrink: 0;
+}
+.rel-modal-title { font-size: 20px; font-weight: 800; color: var(--text); }
+.rel-modal-close {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text2);
+  transition: all 0.15s;
+}
+.rel-modal-close:hover { background: var(--border); color: var(--text); }
+
+.rel-modal-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 28px;
+  gap: 16px;
+}
+
+/* Unassigned pool */
+.rel-pool {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  flex-shrink: 0;
+}
+.rel-pool-title {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text3);
+  margin-bottom: 10px;
+}
+.rel-pool-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  min-height: 32px;
+}
+.rel-student-chip {
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: grab;
+  user-select: none;
+  transition: all 0.15s;
+  border: 1.5px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+}
+.rel-student-chip:hover { border-color: var(--blue); color: var(--blue); }
+.rel-student-chip.dragging { opacity: 0.4; }
+
+/* Kanban board */
+.rel-kanban {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  gap: 14px;
+  padding-bottom: 8px;
+}
+
+.rel-kanban-col {
+  width: 200px;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.rel-kanban-col.drag-over {
+  border-style: dashed;
+  background: var(--blue-light);
+}
+
+.rel-col-header {
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1.5px solid var(--border);
+}
+.rel-col-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.rel-col-name-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+  outline: none;
+  min-width: 0;
+}
+.rel-col-del {
+  background: none;
+  border: none;
+  color: var(--text3);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 2px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.rel-col-del:hover { color: var(--danger); }
+
+.rel-col-body {
+  flex: 1;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 80px;
+  overflow-y: auto;
+}
+
+.rel-member-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: grab;
+  user-select: none;
+  border: 1.5px solid transparent;
+}
+.rel-member-chip:hover { opacity: 0.85; }
+.rel-member-chip .rm-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  color: inherit;
+  opacity: 0.5;
+  padding: 0;
+  line-height: 1;
+}
+.rel-member-chip .rm-btn:hover { opacity: 1; }
+
+/* Add group column button */
+.rel-add-col {
+  width: 160px;
+  min-width: 160px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text3);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.rel-add-col:hover { border-color: var(--blue); color: var(--blue); }
+
+/* Rivals section inside modal */
+.rel-rivals-section {
+  flex-shrink: 0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+}
+.rel-rivals-title {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text3);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.rel-rival-chips { display: flex; flex-wrap: wrap; gap: 7px; min-height: 24px; }
+.rel-rival-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #fee2e2;
+  border: 1.5px solid #fecaca;
+  font-size: 12px;
+  font-weight: 700;
+  color: #dc2626;
+}
+.rel-rival-chip button { background: none; border: none; cursor: pointer; color: #dc2626; font-size: 11px; padding: 0; opacity: 0.6; }
+.rel-rival-chip button:hover { opacity: 1; }
+
+/* Overlay dim */
+.rel-overlay { display: none; }
+
+/* Rival picker modal */
+.rival-picker {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.4);
+}
+.rival-picker.open { display: flex; }
+.rival-picker-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  padding: 24px;
+  width: 340px;
+  max-width: 90vw;
+}
+.rival-picker-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 14px; }
+.rival-picker-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+.rival-picker-chip {
+  padding: 6px 13px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--surface2);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.rival-picker-chip:hover { border-color: #dc2626; color: #dc2626; background: #fee2e2; }
+.rival-picker-chip.selected { border-color: #dc2626; background: #fee2e2; color: #dc2626; }
+
+.rel-pair-list { display: flex; flex-direction: column; gap: 6px; max-height: 180px; overflow-y: auto; }
+.rel-pair-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+}
+.rel-pair-item .rel-type { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 800; }
+.rel-pair-item .rel-type.rival { background: #fee2e2; color: #dc2626; }
+.rel-pair-item .del-rel { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 14px; }
+.rel-pair-item .del-rel:hover { color: var(--danger); }
+.rel-hint { font-size: 12px; color: var(--text3); font-weight: 600; margin-bottom: 8px; }
+
+/* Cell context menu */
+.cell-menu {
+  position: fixed;
+  z-index: 999;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  padding: 6px;
+  min-width: 180px;
+  display: none;
+}
+.cell-menu.visible { display: block; }
+.cell-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text);
+  transition: background 0.12s;
+}
+.cell-menu-item:hover { background: var(--surface2); }
+.cell-menu-item.danger { color: var(--danger); }
+
+/* Quiz cache toast */
+.cache-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text2);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.cache-toast.visible { opacity: 1; }
+.cache-toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+/* Note modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.visible { display: flex; }
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 28px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: var(--shadow-lg);
+}
+.modal h3 { font-size: 20px; font-weight: 800; margin-bottom: 16px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+/* Teacher board */
+.board-label {
+  text-align: center;
+  padding: 12px 24px;
+  background: var(--blue);
+  color: white;
+  border-radius: var(--radius-sm);
+  font-weight: 800;
+  font-size: 14px;
+  margin-bottom: 16px;
+  letter-spacing: 0.05em;
+  display: inline-block;
+}
+
+/* ═══════════════════════════════════════
+   MARK TOOL
+═══════════════════════════════════════ */
+.mark-comment-wrap {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  margin-top: 20px;
+  display: none;
+}
+.mark-comment-wrap.visible { display: block; }
+.mark-comment-text {
+  font-size: 16px;
+  line-height: 1.9;
+  color: var(--text);
+  margin-bottom: 16px;
+  font-style: italic;
+  white-space: pre-wrap;
+}
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+.app-footer {
+  text-align: center;
+  padding: 20px 28px;
+  font-size: 13px;
+  color: var(--text3);
+  border-top: 1.5px solid var(--border);
+  background: var(--surface);
+  font-weight: 600;
+}
+.app-footer a {
+  color: var(--text3);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.app-footer a:hover { color: var(--blue); }
+.app-footer a.current { color: var(--blue); font-weight: 800; }
+
+/* ═══════════════════════════════════════
+   PRINT STYLES
+═══════════════════════════════════════ */
+@media print {
+  .nav, .back-btn, .seat-toolbar, .tool-grid, .panel-header,
+  .output-actions, .form-group, .btn, .nav-btn, .app-footer,
+  #panel-dashboard, .dash-greeting { display: none !important; }
+  
+  body { background: white; color: black; }
+  .output-box, .mark-comment-wrap, .seat-grid-wrap {
+    display: block !important;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+  }
+  .seat-cell { border: 1px solid #ccc !important; background: white !important; }
+  .seat-cell-text { display: block !important; }
+  .seat-cell-input { display: none !important; }
+  .tool-panel { display: block !important; }
+  @page { margin: 1.2cm; }
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width: 600px) {
+  .app-main { padding: 20px 16px; }
+  .nav { padding: 0 16px; }
+  .tool-grid { grid-template-columns: 1fr; }
+  .dash-greeting h1 { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     GATE SCREEN
+═══════════════════════════════════════ -->
+<div id="screen-gate" class="screen">
+  <div class="card gate-card">
+    <div class="gate-logo">Lern</div>
+    <div class="gate-tagline">Aura · Veda · Pact · Ayur · <strong style="color:var(--blue)">Lern</strong> — Built in KL.</div>
+    <div class="gate-title">Welcome, Teacher</div>
+    <div class="gate-desc">Enter your Gemini API key to get started. It's stored only in your browser and never sent anywhere except Google.</div>
+    <div class="form-group">
+      <label class="label">Gemini API Key</label>
+      <div class="gate-input-wrap">
+        <input type="password" id="gate-key-input" class="input" placeholder="AIza..." autocomplete="off">
+        <button class="gate-eye" onclick="toggleKeyVisibility()" id="gate-eye-btn">👁️</button>
+      </div>
+    </div>
+    <div id="gate-error" class="gate-error">That key doesn't seem to work. Double-check and try again.</div>
+    <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;" onclick="validateKey()">
+      <span id="gate-btn-text">Unlock Lern →</span>
+    </button>
+    <div class="gate-hint">
+      Don't have a key? <a href="https://aistudio.google.com/app/apikey" target="_blank">Get one free from Google AI Studio →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ONBOARDING SCREEN
+═══════════════════════════════════════ -->
+<div id="screen-onboard" class="screen">
+  <div class="card onboard-card">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="font-size:28px;font-weight:900;color:var(--blue);">Lern</div>
+      <div style="font-size:13px;color:var(--text3);font-weight:600;">Let's set up your teaching profile</div>
+    </div>
+    <div class="onboard-steps">
+      <div class="step-dot active" id="dot-0"></div>
+      <div class="step-dot" id="dot-1"></div>
+      <div class="step-dot" id="dot-2"></div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="onboard-step active" id="step-0">
+      <div class="onboard-title">👋 About You</div>
+      <div class="onboard-subtitle">Let's personalise your experience.</div>
+      <div class="form-group">
+        <label class="label">Your Name</label>
+        <input type="text" id="ob-name" class="input" placeholder="e.g. Puan Sofea">
+      </div>
+      <div class="form-group">
+        <label class="label">Country</label>
+        <input type="text" id="ob-country" class="input" placeholder="e.g. Malaysia">
+      </div>
+      <div class="form-group">
+        <label class="label">School Type</label>
+        <div class="chip-group" id="school-type-chips">
+          <button class="chip" data-val="Primary" onclick="toggleChipSingle(this,'school-type-chips')">Primary</button>
+          <button class="chip" data-val="Secondary" onclick="toggleChipSingle(this,'school-type-chips')">Secondary</button>
+          <button class="chip" data-val="Both" onclick="toggleChipSingle(this,'school-type-chips')">Both</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="onboard-step" id="step-1">
+      <div class="onboard-title">📚 What You Teach</div>
+      <div class="onboard-subtitle">Select subjects you teach (pick all that apply).</div>
+      <div class="form-group">
+        <label class="label">Subjects</label>
+        <div class="chip-group" id="subject-chips">
+          <button class="chip" data-val="Mathematics" onclick="toggleChipMulti(this)">Mathematics</button>
+          <button class="chip" data-val="English" onclick="toggleChipMulti(this)">English</button>
+          <button class="chip" data-val="Science" onclick="toggleChipMulti(this)">Science</button>
+          <button class="chip" data-val="Bahasa Malaysia" onclick="toggleChipMulti(this)">Bahasa Malaysia</button>
+          <button class="chip" data-val="History" onclick="toggleChipMulti(this)">History</button>
+          <button class="chip" data-val="Geography" onclick="toggleChipMulti(this)">Geography</button>
+          <button class="chip" data-val="Arts" onclick="toggleChipMulti(this)">Arts</button>
+          <button class="chip" data-val="ICT" onclick="toggleChipMulti(this)">ICT</button>
+          <button class="chip" data-val="Physical Education" onclick="toggleChipMulti(this)">Physical Education</button>
+          <button class="chip" data-val="Moral Education" onclick="toggleChipMulti(this)">Moral Education</button>
+        </div>
+        <input type="text" id="ob-subject-custom" class="input" placeholder="Or type your subject(s) here..." style="margin-top:10px;">
+      </div>
+      <div class="form-group">
+        <label class="label">Year / Form Groups You Teach</label>
+        <input type="text" id="ob-year" class="input" placeholder="e.g. Form 1, Form 2, Year 5">
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="onboard-step" id="step-2">
+      <div class="onboard-title">🏫 Your Classroom</div>
+      <div class="onboard-subtitle">Just a couple more details.</div>
+      <div class="form-group">
+        <label class="label">Average Class Size</label>
+        <div class="chip-group" id="size-chips">
+          <button class="chip" data-val="Under 20" onclick="toggleChipSingle(this,'size-chips')">Under 20</button>
+          <button class="chip" data-val="20–30" onclick="toggleChipSingle(this,'size-chips')">20–30</button>
+          <button class="chip" data-val="30–40" onclick="toggleChipSingle(this,'size-chips')">30–40</button>
+          <button class="chip" data-val="40+" onclick="toggleChipSingle(this,'size-chips')">40+</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="label">Any notes about your classes? (optional)</label>
+        <textarea id="ob-notes" class="textarea" placeholder="e.g. Mixed ability classes, some students with special needs, mostly visual learners..."></textarea>
+      </div>
+    </div>
+
+    <div class="onboard-nav">
+      <button class="btn btn-ghost" id="ob-back-btn" onclick="onboardBack()" style="visibility:hidden;">← Back</button>
+      <button class="btn btn-primary" id="ob-next-btn" onclick="onboardNext()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MAIN APP
+═══════════════════════════════════════ -->
+<div id="screen-app" class="screen">
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-logo">Lern</div>
+    <div class="nav-right">
+      <button class="nav-btn" onclick="showPanel('dashboard')">🏠 Home</button>
+      <button class="nav-btn" onclick="startOnboarding(true)">👤 Edit Profile</button>
+      <div class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
+        <span id="theme-icon">🌙</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main panels -->
+  <div class="app-main">
+
+    <!-- Dashboard -->
+    <div id="panel-dashboard" class="tool-panel active">
+      <div class="dash-greeting">
+        <h1 id="dash-greeting-text">Good morning! 👋</h1>
+        <p id="dash-greeting-sub">What would you like to do today?</p>
+      </div>
+      <div class="tool-grid">
+        <div class="tool-card" style="--card-color:#2563eb" onclick="showPanel('seat')">
+          <span class="tool-card-icon">🪑</span>
+          <h3>Seat</h3>
+          <p>Arrange your classroom seating with a drag-and-drop grid. Add notes per student.</p>
+          <div class="tool-card-badge">Planner</div>
+        </div>
+        <div class="tool-card" style="--card-color:#059669" onclick="showPanel('plan')">
+          <span class="tool-card-icon">📋</span>
+          <h3>Plan</h3>
+          <p>Generate a full lesson plan from a topic and duration. Ready to print.</p>
+          <div class="tool-card-badge">AI</div>
+        </div>
+        <div class="tool-card" style="--card-color:#d97706" onclick="showPanel('mark')">
+          <span class="tool-card-icon">✏️</span>
+          <h3>Mark</h3>
+          <p>Write professional report card comments in seconds. Warm and formal.</p>
+          <div class="tool-card-badge">AI</div>
+        </div>
+        <div class="tool-card" style="--card-color:#7c3aed" onclick="showPanel('quiz')">
+          <span class="tool-card-icon">📝</span>
+          <h3>Quiz</h3>
+          <p>Generate ready-to-print worksheets and quizzes for any topic.</p>
+          <div class="tool-card-badge">AI</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEAT PANEL -->
+    <div id="panel-seat" class="tool-panel">
+      <div class="panel-header">
+        <button class="back-btn" onclick="showPanel('dashboard')">← Back</button>
+        <div class="panel-title">🪑 Seat Planner</div>
+      </div>
+
+      <div style="text-align:center;margin-bottom:14px;">
+        <div class="board-label">📖 TEACHER'S BOARD / WHITEBOARD</div>
+      </div>
+
+      <div class="seat-workspace">
+
+        <!-- LEFT: Relationships button + info -->
+        <div class="seat-left">
+          <button class="seat-rel-btn" onclick="openRelPanel()">
+            🕸 Relationships
+          </button>
+          <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;font-size:12px;color:var(--text2);font-weight:600;line-height:1.7;">
+            <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--text3);margin-bottom:8px;">How to use</div>
+            <div>① Add student names on the right</div>
+            <div>② Drag names onto grid cells</div>
+            <div>③ Set relationships via the web</div>
+            <div>④ Adjust the Dynamics meter</div>
+            <div>⑤ Hit Optimize</div>
+          </div>
+        </div>
+
+        <!-- CENTER: Toolbar + Grid -->
+        <div class="seat-center">
+          <div class="seat-toolbar">
+            <div class="seat-toolbar-group">
+              <button class="btn btn-sm btn-secondary" onclick="seatAddRow()">+ Row</button>
+              <button class="btn btn-sm btn-ghost" onclick="seatRemoveRow()">− Row</button>
+            </div>
+            <div class="seat-toolbar-sep"></div>
+            <div class="seat-toolbar-group">
+              <button class="btn btn-sm btn-secondary" onclick="seatAddCol()">+ Col</button>
+              <button class="btn btn-sm btn-ghost" onclick="seatRemoveCol()">− Col</button>
+            </div>
+            <div class="seat-toolbar-sep"></div>
+            <button class="btn btn-sm btn-danger" onclick="seatClearAll()">🗑</button>
+            <button class="btn btn-sm btn-secondary" onclick="window.print()">🖨</button>
+            <div class="seat-info" id="seat-info">5 × 6</div>
+          </div>
+
+          <div class="seat-grid-wrap">
+            <div id="seat-col-labels" class="seat-label-row"></div>
+            <div id="seat-grid"></div>
+          </div>
+          <p style="font-size:12px;color:var(--text3);font-weight:600;">
+            💡 Drag names from the list → drop onto cells. Drag cells to swap.
+          </p>
+        </div>
+
+        <!-- RIGHT: Dynamics meter + Name list -->
+        <div class="seat-right">
+
+          <!-- Dynamics meter -->
+          <div class="seat-meter">
+            <h4>⚡ Seating Optimizer</h4>
+            <div class="seat-meter-desc">Classroom Dynamics</div>
+            <div class="seat-meter-labels">
+              <span>Harmonious</span>
+              <span>Challenging</span>
+            </div>
+            <input type="range" min="1" max="5" value="1" id="dynamics-slider" oninput="updateDynamicsVal(this.value)">
+            <div class="seat-meter-val" id="dynamics-val">1</div>
+            <button class="seat-optimize-btn" onclick="optimizeSeating()">✨ Optimize Seats</button>
+          </div>
+
+          <!-- Student name list -->
+          <div class="seat-name-list">
+            <h4>👥 Students</h4>
+            <div class="seat-name-add">
+              <input type="text" id="seat-name-input" placeholder="Add name…" onkeydown="if(event.key==='Enter')addStudentName()">
+              <button onclick="addStudentName()">+</button>
+            </div>
+            <div class="seat-name-items" id="seat-name-items"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- PLAN PANEL -->
+    <div id="panel-plan" class="tool-panel">
+      <div class="panel-header">
+        <button class="back-btn" onclick="showPanel('dashboard')">← Back</button>
+        <div class="panel-title">📋 Lesson Planner</div>
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+          <button class="btn btn-sm btn-primary" id="plan-mode-ai" onclick="setPlanMode('ai')">✨ AI Generate</button>
+          <button class="btn btn-sm btn-secondary" id="plan-mode-manual" onclick="setPlanMode('manual')">📝 Manual Template</button>
+        </div>
+      </div>
+
+      <!-- AI MODE -->
+      <div id="plan-ai-section">
+        <div class="card">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" class="plan-grid">
+            <div class="form-group">
+              <label class="label">Subject</label>
+              <input type="text" id="plan-subject" class="input" placeholder="e.g. Mathematics">
+            </div>
+            <div class="form-group">
+              <label class="label">Year / Form</label>
+              <input type="text" id="plan-year" class="input" placeholder="e.g. Form 3">
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="label">Topic</label>
+              <input type="text" id="plan-topic" class="input" placeholder="e.g. Fractions and Decimals">
+            </div>
+            <div class="form-group">
+              <label class="label">Duration (minutes)</label>
+              <select id="plan-duration" class="select">
+                <option>30</option>
+                <option selected>40</option>
+                <option>45</option>
+                <option>60</option>
+                <option>80</option>
+                <option>90</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="label">Learning Objectives (optional)</label>
+              <input type="text" id="plan-objectives" class="input" placeholder="e.g. Understand equivalent fractions">
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="label">Special requirements (optional)</label>
+              <input type="text" id="plan-special" class="input" placeholder="e.g. No projector available, hands-on only">
+            </div>
+          </div>
+          <button class="btn btn-primary btn-lg" onclick="generatePlan()">✨ Generate Lesson Plan</button>
+        </div>
+
+        <div class="loading-wrap" id="plan-loading">
+          <div class="spinner"></div>
+          <span class="loading-msg">Generating your lesson plan…</span>
+        </div>
+        <div class="error-box" id="plan-error"></div>
+        <div class="output-box" id="plan-output"></div>
+        <div class="output-actions" id="plan-actions" style="display:none">
+          <button class="btn btn-secondary" onclick="window.print()">🖨 Print / Save PDF</button>
+          <button class="btn btn-ghost" onclick="copyOutput('plan-output')">📋 Copy</button>
+        </div>
+      </div>
+
+      <!-- MANUAL MODE -->
+      <div id="plan-manual-section" style="display:none;">
+        <div class="card" id="plan-manual-form">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;" class="plan-grid">
+            <div class="form-group">
+              <label class="label">Subject</label>
+              <input type="text" id="pm-subject" class="input" placeholder="e.g. Mathematics">
+            </div>
+            <div class="form-group">
+              <label class="label">Year / Form</label>
+              <input type="text" id="pm-year" class="input" placeholder="e.g. Form 3">
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="label">Topic</label>
+              <input type="text" id="pm-topic" class="input" placeholder="e.g. Fractions and Decimals">
+            </div>
+            <div class="form-group">
+              <label class="label">Date</label>
+              <input type="text" id="pm-date" class="input" placeholder="e.g. 17 May 2026">
+            </div>
+            <div class="form-group">
+              <label class="label">Duration (minutes)</label>
+              <select id="pm-duration" class="select">
+                <option>30</option>
+                <option selected>40</option>
+                <option>45</option>
+                <option>60</option>
+                <option>80</option>
+                <option>90</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="label">Learning Objectives</label>
+            <textarea id="pm-objectives" class="textarea" placeholder="1.&#10;2.&#10;3."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="label">Materials &amp; Resources</label>
+            <textarea id="pm-materials" class="textarea" placeholder="e.g. Textbook p.45, worksheets, ruler, whiteboard"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="label">Introduction / Set Induction</label>
+            <textarea id="pm-intro" class="textarea" placeholder="What and how you'll open the lesson. Time: ___ min"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="label">Main Activity / Teaching Steps</label>
+            <textarea id="pm-main" class="textarea" style="min-height:120px" placeholder="Step-by-step teaching sequence with timings."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="label">Assessment / Checking Understanding</label>
+            <textarea id="pm-assess" class="textarea" placeholder="e.g. Q&A, mini whiteboard check, exit ticket"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="label">Closure</label>
+            <textarea id="pm-closure" class="textarea" placeholder="How you'll wrap up. Time: ___ min"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="label">Homework / Extension</label>
+            <textarea id="pm-homework" class="textarea" placeholder="e.g. Textbook Ex 3.2, Q1–10"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="label">Differentiation</label>
+            <textarea id="pm-diff" class="textarea" placeholder="Weaker students: &#10;Stronger students:"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="label">Teacher's Notes</label>
+            <textarea id="pm-notes" class="textarea" placeholder="Anything else to remember."></textarea>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primary btn-lg" onclick="renderManualPlan()">📄 Preview &amp; Print</button>
+            <button class="btn btn-secondary btn-lg" onclick="clearManualPlan()">🗑 Clear</button>
+          </div>
+        </div>
+
+        <div class="output-box" id="plan-manual-output" style="display:none;"></div>
+        <div class="output-actions" id="plan-manual-actions" style="display:none">
+          <button class="btn btn-secondary" onclick="window.print()">🖨 Print / Save PDF</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('plan-manual-output').style.display='none';document.getElementById('plan-manual-actions').style.display='none';document.getElementById('plan-manual-form').style.display='block';">← Edit</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARK PANEL -->
+    <div id="panel-mark" class="tool-panel">
+      <div class="panel-header">
+        <button class="back-btn" onclick="showPanel('dashboard')">← Back</button>
+        <div class="panel-title">✏️ Report Comment Generator</div>
+      </div>
+      <div class="card">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" class="plan-grid">
+          <div class="form-group">
+            <label class="label">Student Name</label>
+            <input type="text" id="mark-name" class="input" placeholder="e.g. Ahmad">
+          </div>
+          <div class="form-group">
+            <label class="label">Overall Performance</label>
+            <select id="mark-perf" class="select">
+              <option value="Excellent">Excellent</option>
+              <option value="Good" selected>Good</option>
+              <option value="Satisfactory">Satisfactory</option>
+              <option value="Needs Improvement">Needs Improvement</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="label">Key Strengths</label>
+            <input type="text" id="mark-strengths" class="input" placeholder="e.g. Creative, strong verbal skills">
+          </div>
+          <div class="form-group">
+            <label class="label">Areas to Improve</label>
+            <input type="text" id="mark-improve" class="input" placeholder="e.g. Needs to complete homework on time">
+          </div>
+          <div class="form-group">
+            <label class="label">Subject (optional)</label>
+            <input type="text" id="mark-subject" class="input" placeholder="e.g. English">
+          </div>
+          <div class="form-group">
+            <label class="label">Comment Tone</label>
+            <select id="mark-tone" class="select">
+              <option value="formal and warm">Formal & Warm</option>
+              <option value="encouraging">Encouraging</option>
+              <option value="direct and professional">Direct & Professional</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="generateMark()">✨ Generate Comment</button>
+      </div>
+
+      <div class="loading-wrap" id="mark-loading">
+        <div class="spinner"></div>
+        <span class="loading-msg">Writing your report comment…</span>
+      </div>
+      <div class="error-box" id="mark-error"></div>
+      <div class="mark-comment-wrap" id="mark-output-wrap">
+        <div class="mark-comment-text" id="mark-output"></div>
+        <div class="output-actions">
+          <button class="btn btn-secondary" onclick="copyMarkComment()">📋 Copy Comment</button>
+          <button class="btn btn-ghost" onclick="generateMark()">🔄 Regenerate</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ PANEL -->
+    <div id="panel-quiz" class="tool-panel">
+      <div class="panel-header">
+        <button class="back-btn" onclick="showPanel('dashboard')">← Back</button>
+        <div class="panel-title">📝 Quiz / Worksheet Generator</div>
+      </div>
+      <div class="card">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" class="plan-grid">
+          <div class="form-group">
+            <label class="label">Subject</label>
+            <input type="text" id="quiz-subject" class="input" placeholder="e.g. Science">
+          </div>
+          <div class="form-group">
+            <label class="label">Year / Form</label>
+            <input type="text" id="quiz-year" class="input" placeholder="e.g. Year 4">
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="label">Topic</label>
+            <input type="text" id="quiz-topic" class="input" placeholder="e.g. The Water Cycle">
+          </div>
+          <div class="form-group">
+            <label class="label">Number of Questions</label>
+            <select id="quiz-count" class="select">
+              <option>5</option>
+              <option selected>10</option>
+              <option>15</option>
+              <option>20</option>
+              <option>25</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="label">Difficulty</label>
+            <select id="quiz-diff" class="select">
+              <option value="easy">Easy</option>
+              <option value="moderate" selected>Moderate</option>
+              <option value="challenging">Challenging</option>
+            </select>
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="label">Question Types</label>
+            <div class="chip-group" id="qtype-chips">
+              <button class="chip selected" data-val="Multiple Choice" onclick="toggleChipMulti(this)">Multiple Choice</button>
+              <button class="chip selected" data-val="Short Answer" onclick="toggleChipMulti(this)">Short Answer</button>
+              <button class="chip" data-val="True / False" onclick="toggleChipMulti(this)">True / False</button>
+              <button class="chip" data-val="Fill in the Blank" onclick="toggleChipMulti(this)">Fill in the Blank</button>
+            </div>
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="label">Include Answer Key?</label>
+            <div class="chip-group" id="answerkey-chips">
+              <button class="chip selected" data-val="yes" onclick="toggleChipSingle(this,'answerkey-chips')">Yes</button>
+              <button class="chip" data-val="no" onclick="toggleChipSingle(this,'answerkey-chips')">No</button>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="generateQuiz()">✨ Generate Quiz</button>
+      </div>
+
+      <div class="loading-wrap" id="quiz-loading">
+        <div class="spinner"></div>
+        <span class="loading-msg">Building your quiz…</span>
+      </div>
+      <div class="error-box" id="quiz-error"></div>
+      <div class="output-box" id="quiz-output"></div>
+      <div class="output-actions" id="quiz-actions" style="display:none">
+        <button class="btn btn-secondary" onclick="window.print()">🖨 Print / Save PDF</button>
+        <button class="btn btn-ghost" onclick="copyOutput('quiz-output')">📋 Copy</button>
+      </div>
+    </div>
+
+  </div><!-- /app-main -->
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <a href="https://auraai-app.github.io/AuraAI" target="_blank">Aura</a> ·
+    <a href="https://study.veda-net.com" target="_blank">Veda</a> ·
+    <a href="https://pact.veda-net.com" target="_blank">Pact</a> ·
+    <a href="https://ayur.veda-net.com" target="_blank">Ayur</a> ·
+    <a href="https://lern.veda-net.com" class="current">Lern</a>
+    — Built in KL.
+  </footer>
+</div>
+
+<!-- Groups & Rivals kanban modal -->
+<div class="rel-modal" id="rel-panel">
+  <div class="rel-modal-header">
+    <div class="rel-modal-title">👥 Friend Groups &amp; Rivals</div>
+    <button class="rel-modal-close" onclick="closeRelPanel()">✕ Close</button>
+  </div>
+  <div class="rel-modal-body">
+
+    <!-- Unassigned pool -->
+    <div class="rel-pool">
+      <div class="rel-pool-title">Unassigned students — drag into a group</div>
+      <div class="rel-pool-chips" id="rel-pool-chips"></div>
+    </div>
+
+    <!-- Kanban columns -->
+    <div class="rel-kanban" id="rel-kanban">
+      <div class="rel-add-col" onclick="addFriendGroup()">
+        <span style="font-size:22px;">＋</span>
+        <span>New Group</span>
+      </div>
+    </div>
+
+    <!-- Rivals -->
+    <div class="rel-rivals-section">
+      <div class="rel-rivals-title">
+        <span>⚡ Rivals — keep these students apart</span>
+        <button onclick="openRivalPicker()" style="padding:5px 12px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface2);font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;color:var(--text2);">＋ Add Rival Pair</button>
+      </div>
+      <div class="rel-rival-chips" id="rel-rival-chips">
+        <span style="color:var(--text3);font-size:12px;font-weight:600;">None set.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Rival picker modal -->
+<div class="rival-picker" id="rival-picker">
+  <div class="rival-picker-card">
+    <div class="rival-picker-title">⚡ Pick two students who are rivals</div>
+    <div class="rival-picker-grid" id="rival-picker-grid"></div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="closeRivalPicker()" style="flex:1;padding:9px;border-radius:7px;border:1.5px solid var(--border);background:var(--surface2);font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;color:var(--text2);">Cancel</button>
+      <button onclick="confirmRivalPick()" style="flex:1;padding:9px;border-radius:7px;border:none;background:#dc2626;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;color:white;">Mark as Rivals</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quiz cache toast -->
+<div class="cache-toast" id="cache-toast">
+  <div class="cache-toast-dot"></div>
+  <span id="cache-toast-text">Caching quizzes in background…</span>
+</div>
+
+<!-- Cell note modal -->
+<div class="modal-overlay" id="note-modal">
+  <div class="modal">
+    <h3>📌 Cell Note</h3>
+    <div class="form-group">
+      <label class="label">Student Name</label>
+      <input type="text" id="note-modal-name" class="input">
+    </div>
+    <div class="form-group">
+      <label class="label">Note</label>
+      <textarea id="note-modal-text" class="textarea" placeholder="e.g. Needs front row, can't sit next to Amirul, hearing impairment..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeNoteModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNote()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cell context menu -->
+<div class="cell-menu" id="cell-menu">
+  <div class="cell-menu-item" onclick="menuEditName()">✏️ Edit Name</div>
+  <div class="cell-menu-item" onclick="menuAddNote()">📌 Add / Edit Note</div>
+  <div class="cell-menu-item" onclick="menuViewNote()" id="menu-view-note">👁 View Note</div>
+  <div class="cell-menu-item danger" onclick="menuClearCell()">🗑 Clear Cell</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let apiKey = '';
+let profile = {};
+let seatRows = 5;
+let seatCols = 6;
+let seatData = {}; // key: "r-c", val: {name, note}
+let contextCell = null;
+let noteCellTarget = null;
+let dragSource = null; // {type: 'cell'|'name', r?, c?, name?}
+
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const currentMonth = MONTHS[new Date().getMonth()];
+const currentYear = new Date().getFullYear();
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+window.addEventListener('load', () => {
+  // Theme
+  const savedTheme = localStorage.getItem('lern-theme') || 'light';
+  applyTheme(savedTheme);
+
+  // Key
+  apiKey = localStorage.getItem('lern-api-key') || '';
+  if (!apiKey) { showScreen('gate'); return; }
+
+  // Seat data
+  const savedSeat = localStorage.getItem('lern-seat');
+  if (savedSeat) {
+    try {
+      const sd = JSON.parse(savedSeat);
+      seatRows = sd.rows;
+      seatCols = sd.cols;
+      seatData = sd.data;
+    } catch {}
+  }
+
+  // Profile
+  const savedProfile = localStorage.getItem('lern-profile');
+  if (savedProfile) {
+    profile = JSON.parse(savedProfile);
+    launchApp();
+  } else {
+    startOnboarding(false);
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#cell-menu') && !e.target.closest('.seat-cell')) {
+      document.getElementById('cell-menu').classList.remove('visible');
+    }
+  });
+});
+
+// ═══════════════════════════════════════
+// SCREENS
+// ═══════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('theme-icon').textContent = t === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('lern-theme', t);
+}
+
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
+}
+
+// ═══════════════════════════════════════
+// GATE
+// ═══════════════════════════════════════
+function toggleKeyVisibility() {
+  const inp = document.getElementById('gate-key-input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+async function validateKey() {
+  const inp = document.getElementById('gate-key-input');
+  const key = inp.value.trim();
+  if (!key) { showGateError('Please enter your API key.'); return; }
+
+  const btn = document.getElementById('gate-btn-text');
+  btn.textContent = 'Checking…';
+
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: 'Hi' }] }] })
+    });
+    if (!res.ok) throw new Error('invalid');
+    apiKey = key;
+    localStorage.setItem('lern-api-key', key);
+    document.getElementById('gate-error').style.display = 'none';
+
+    const savedProfile = localStorage.getItem('lern-profile');
+    if (savedProfile) {
+      profile = JSON.parse(savedProfile);
+      launchApp();
+    } else {
+      startOnboarding(false);
+    }
+  } catch {
+    showGateError('That key doesn\'t seem to work. Double-check and try again.');
+    btn.textContent = 'Unlock Lern →';
+  }
+}
+
+function showGateError(msg) {
+  const el = document.getElementById('gate-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+document.getElementById('gate-key-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') validateKey();
+});
+
+// ═══════════════════════════════════════
+// ONBOARDING
+// ═══════════════════════════════════════
+let obStep = 0;
+
+function startOnboarding(isEdit) {
+  obStep = 0;
+
+  // Pre-fill if editing
+  if (isEdit && profile.name) {
+    document.getElementById('ob-name').value = profile.name || '';
+    document.getElementById('ob-country').value = profile.country || '';
+    document.getElementById('ob-year').value = profile.year || '';
+    document.getElementById('ob-notes').value = profile.notes || '';
+
+    // School type chips
+    document.querySelectorAll('#school-type-chips .chip').forEach(c => {
+      c.classList.toggle('selected', c.dataset.val === profile.schoolType);
+    });
+    // Subject chips
+    const subjects = profile.subjects || [];
+    document.querySelectorAll('#subject-chips .chip').forEach(c => {
+      c.classList.toggle('selected', subjects.includes(c.dataset.val));
+    });
+    document.getElementById('ob-subject-custom').value = profile.subjectCustom || '';
+    // Size chips
+    document.querySelectorAll('#size-chips .chip').forEach(c => {
+      c.classList.toggle('selected', c.dataset.val === profile.classSize);
+    });
+  }
+
+  updateObStep();
+  showScreen('onboard');
+}
+
+function updateObStep() {
+  document.querySelectorAll('.onboard-step').forEach((s, i) => {
+    s.classList.toggle('active', i === obStep);
+  });
+  document.querySelectorAll('.step-dot').forEach((d, i) => {
+    d.classList.remove('active', 'done');
+    if (i === obStep) d.classList.add('active');
+    else if (i < obStep) d.classList.add('done');
+  });
+  document.getElementById('ob-back-btn').style.visibility = obStep === 0 ? 'hidden' : 'visible';
+  document.getElementById('ob-next-btn').textContent = obStep === 2 ? '🚀 Let\'s Go!' : 'Next →';
+}
+
+function onboardNext() {
+  if (obStep < 2) {
+    obStep++;
+    updateObStep();
+  } else {
+    saveProfile();
+    launchApp();
+  }
+}
+
+function onboardBack() {
+  if (obStep > 0) {
+    obStep--;
+    updateObStep();
+  }
+}
+
+function saveProfile() {
+  const selectedSubjects = Array.from(document.querySelectorAll('#subject-chips .chip.selected')).map(c => c.dataset.val);
+  const customSubjects = document.getElementById('ob-subject-custom').value.trim();
+  const subjectList = [...selectedSubjects, ...(customSubjects ? [customSubjects] : [])];
+
+  profile = {
+    name: document.getElementById('ob-name').value.trim() || 'Teacher',
+    country: document.getElementById('ob-country').value.trim(),
+    schoolType: document.querySelector('#school-type-chips .chip.selected')?.dataset.val || '',
+    subjects: selectedSubjects,
+    subjectCustom: customSubjects,
+    subjectLabel: subjectList.join(', ') || 'General',
+    year: document.getElementById('ob-year').value.trim(),
+    classSize: document.querySelector('#size-chips .chip.selected')?.dataset.val || '',
+    notes: document.getElementById('ob-notes').value.trim()
+  };
+  localStorage.setItem('lern-profile', JSON.stringify(profile));
+}
+
+// ═══════════════════════════════════════
+// APP LAUNCH
+// ═══════════════════════════════════════
+function launchApp() {
+  updateDashboard();
+  prefillToolFields();
+  loadStudentNames();
+  loadRelationships();
+  renderSeatGrid();
+  showScreen('app');
+  showPanel('dashboard');
+  // Background quiz cache
+  setTimeout(backgroundCacheQuizzes, 2000);
+}
+
+function updateDashboard() {
+  const hour = new Date().getHours();
+  const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const name = profile.name || 'Teacher';
+  document.getElementById('dash-greeting-text').textContent = `${greet}, ${name}! 👋`;
+  document.getElementById('dash-greeting-sub').textContent =
+    `${currentMonth} ${currentYear} · ${profile.subjectLabel || ''} ${profile.schoolType || ''} Teacher`;
+}
+
+function prefillToolFields() {
+  // Plan
+  const subj = profile.subjectLabel || '';
+  document.getElementById('plan-subject').value = subj;
+  document.getElementById('plan-year').value = profile.year || '';
+  // Quiz
+  document.getElementById('quiz-subject').value = subj;
+  document.getElementById('quiz-year').value = profile.year || '';
+}
+
+// ═══════════════════════════════════════
+// PANEL NAVIGATION
+// ═══════════════════════════════════════
+function showPanel(name) {
+  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'seat') renderSeatGrid();
+}
+
+// ═══════════════════════════════════════
+// CHIP HELPERS
+// ═══════════════════════════════════════
+function toggleChipSingle(el, groupId) {
+  document.querySelectorAll('#' + groupId + ' .chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function toggleChipMulti(el) {
+  el.classList.toggle('selected');
+}
+
+function getSelectedChips(groupId) {
+  return Array.from(document.querySelectorAll('#' + groupId + ' .chip.selected')).map(c => c.dataset.val);
+}
+
+// ═══════════════════════════════════════
+// SEAT TOOL — STATE
+// ═══════════════════════════════════════
+function seatKey(r, c) { return `${r}-${c}`; }
+
+function renderSeatGrid() {
+  const grid = document.getElementById('seat-grid');
+  const labels = document.getElementById('seat-col-labels');
+  grid.innerHTML = '';
+  labels.innerHTML = '';
+  document.getElementById('seat-info').textContent = `${seatRows} × ${seatCols}`;
+
+  labels.innerHTML = '<div style="width:22px;flex-shrink:0;"></div>';
+  for (let c = 0; c < seatCols; c++) {
+    const label = document.createElement('div');
+    label.className = 'seat-col-label';
+    label.textContent = `C${c+1}`;
+    labels.appendChild(label);
+  }
+
+  for (let r = 0; r < seatRows; r++) {
+    const row = document.createElement('div');
+    row.className = 'seat-row';
+    const rowLabel = document.createElement('div');
+    rowLabel.className = 'seat-row-label';
+    rowLabel.textContent = r + 1;
+    row.appendChild(rowLabel);
+    for (let c = 0; c < seatCols; c++) {
+      row.appendChild(createSeatCell(r, c));
+    }
+    grid.appendChild(row);
+  }
+  saveSeat();
+  renderNameList();
+}
+
+function createSeatCell(r, c) {
+  const k = seatKey(r, c);
+  const d = seatData[k] || {};
+  const cell = document.createElement('div');
+  cell.className = 'seat-cell' + (d.name ? ' has-name' : '') + (d.note ? ' has-note' : '');
+  cell.dataset.r = r;
+  cell.dataset.c = c;
+  cell.draggable = !!d.name;
+  cell.title = d.note ? `📌 ${d.note}` : '';
+
+  const nameSpan = document.createElement('span');
+  nameSpan.className = 'seat-cell-text';
+  nameSpan.textContent = d.name || '+';
+  nameSpan.style.opacity = d.name ? '1' : '0.3';
+
+  const input = document.createElement('input');
+  input.className = 'seat-cell-input';
+  input.type = 'text';
+  input.value = d.name || '';
+  input.maxLength = 20;
+
+  cell.appendChild(nameSpan);
+  cell.appendChild(input);
+
+  // Click to edit (if no name dragged in)
+  cell.addEventListener('click', (e) => {
+    if (cell.classList.contains('editing')) return;
+    startCellEdit(cell, r, c, nameSpan, input);
+  });
+
+  cell.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    showCellMenu(e.clientX, e.clientY, r, c);
+  });
+
+  input.addEventListener('blur', () => finishEdit(cell, r, c, nameSpan, input));
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); input.blur(); }
+    if (e.key === 'Escape') { input.value = seatData[k]?.name || ''; input.blur(); }
+  });
+
+  // Drag from cell to cell (swap)
+  cell.addEventListener('dragstart', (e) => {
+    if (!seatData[k]?.name) { e.preventDefault(); return; }
+    dragSource = { type: 'cell', r, c };
+    e.dataTransfer.effectAllowed = 'move';
+  });
+
+  // Drop target for both name-list and cell drags
+  cell.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    cell.classList.add('drag-over');
+  });
+  cell.addEventListener('dragleave', () => cell.classList.remove('drag-over'));
+  cell.addEventListener('drop', (e) => {
+    e.preventDefault();
+    cell.classList.remove('drag-over');
+    if (!dragSource) return;
+
+    if (dragSource.type === 'name') {
+      // Drop from name list
+      const name = dragSource.name;
+      if (!seatData[k]) seatData[k] = {};
+      const oldName = seatData[k].name;
+      seatData[k].name = name;
+      // Remove from old cell if it was placed
+      if (oldName) {
+        // just overwrite
+      }
+      dragSource = null;
+      renderSeatGrid();
+    } else if (dragSource.type === 'cell') {
+      const sk = seatKey(dragSource.r, dragSource.c);
+      const dk = k;
+      if (sk === dk) { dragSource = null; return; }
+      const tmp = { ...seatData[sk] };
+      seatData[sk] = { ...(seatData[dk] || {}) };
+      seatData[dk] = tmp;
+      dragSource = null;
+      renderSeatGrid();
+    }
+  });
+
+  return cell;
+}
+
+function startCellEdit(cell, r, c, nameSpan, input) {
+  cell.classList.add('editing');
+  input.focus();
+  input.select();
+}
+
+function finishEdit(cell, r, c, nameSpan, input) {
+  const k = seatKey(r, c);
+  const val = input.value.trim();
+  if (!seatData[k]) seatData[k] = {};
+  seatData[k].name = val;
+  nameSpan.textContent = val || '+';
+  nameSpan.style.opacity = val ? '1' : '0.3';
+  cell.classList.remove('editing');
+  cell.classList.toggle('has-name', !!val);
+  cell.draggable = !!val;
+  saveSeat();
+  renderNameList();
+}
+
+function showCellMenu(x, y, r, c) {
+  contextCell = { r, c };
+  const menu = document.getElementById('cell-menu');
+  const k = seatKey(r, c);
+  const hasNote = !!seatData[k]?.note;
+  document.getElementById('menu-view-note').style.display = hasNote ? 'flex' : 'none';
+  menu.style.left = Math.min(x, window.innerWidth - 200) + 'px';
+  menu.style.top = Math.min(y, window.innerHeight - 180) + 'px';
+  menu.classList.add('visible');
+}
+
+function menuEditName() {
+  document.getElementById('cell-menu').classList.remove('visible');
+  if (!contextCell) return;
+  const { r, c } = contextCell;
+  document.querySelectorAll('.seat-cell').forEach(cell => {
+    if (parseInt(cell.dataset.r) === r && parseInt(cell.dataset.c) === c) {
+      startCellEdit(cell, r, c, cell.querySelector('.seat-cell-text'), cell.querySelector('.seat-cell-input'));
+    }
+  });
+}
+
+function menuAddNote() {
+  document.getElementById('cell-menu').classList.remove('visible');
+  if (!contextCell) return;
+  noteCellTarget = contextCell;
+  const k = seatKey(contextCell.r, contextCell.c);
+  document.getElementById('note-modal-name').value = seatData[k]?.name || '';
+  document.getElementById('note-modal-text').value = seatData[k]?.note || '';
+  document.getElementById('note-modal').classList.add('visible');
+}
+
+function menuViewNote() { document.getElementById('cell-menu').classList.remove('visible'); menuAddNote(); }
+
+function menuClearCell() {
+  document.getElementById('cell-menu').classList.remove('visible');
+  if (!contextCell) return;
+  seatData[seatKey(contextCell.r, contextCell.c)] = {};
+  renderSeatGrid();
+}
+
+function saveNote() {
+  if (!noteCellTarget) return;
+  const k = seatKey(noteCellTarget.r, noteCellTarget.c);
+  if (!seatData[k]) seatData[k] = {};
+  seatData[k].name = document.getElementById('note-modal-name').value.trim();
+  seatData[k].note = document.getElementById('note-modal-text').value.trim();
+  closeNoteModal();
+  renderSeatGrid();
+}
+
+function closeNoteModal() {
+  document.getElementById('note-modal').classList.remove('visible');
+  noteCellTarget = null;
+}
+
+function seatAddRow() { seatRows++; renderSeatGrid(); }
+function seatRemoveRow() { if (seatRows > 1) { seatRows--; renderSeatGrid(); } }
+function seatAddCol() { seatCols++; renderSeatGrid(); }
+function seatRemoveCol() { if (seatCols > 1) { seatCols--; renderSeatGrid(); } }
+function seatClearAll() {
+  if (confirm('Clear all student names and notes from the grid?')) {
+    seatData = {};
+    renderSeatGrid();
+  }
+}
+
+function saveSeat() {
+  localStorage.setItem('lern-seat', JSON.stringify({ rows: seatRows, cols: seatCols, data: seatData }));
+}
+
+// ═══════════════════════════════════════
+// STUDENT NAME LIST
+// ═══════════════════════════════════════
+let studentNames = []; // master list
+
+function loadStudentNames() {
+  const saved = localStorage.getItem('lern-students');
+  studentNames = saved ? JSON.parse(saved) : [];
+}
+
+function saveStudentNames() {
+  localStorage.setItem('lern-students', JSON.stringify(studentNames));
+}
+
+function addStudentName() {
+  const input = document.getElementById('seat-name-input');
+  const name = input.value.trim();
+  if (!name || studentNames.includes(name)) { input.value = ''; return; }
+  studentNames.push(name);
+  saveStudentNames();
+  input.value = '';
+  renderNameList();
+  drawRelWeb();
+}
+
+function removeStudentName(name) {
+  studentNames = studentNames.filter(n => n !== name);
+  // Remove from grid
+  Object.keys(seatData).forEach(k => {
+    if (seatData[k]?.name === name) seatData[k].name = '';
+  });
+  // Remove from groups and rivals
+  friendGroups.forEach(g => { g.members = g.members.filter(m => m !== name); });
+  rivals = rivals.filter(r => r.a !== name && r.b !== name);
+  saveRelData();
+  saveStudentNames();
+  saveSeat();
+  renderSeatGrid();
+  drawRelWeb();
+}
+
+function getPlacedNames() {
+  return new Set(Object.values(seatData).map(d => d.name).filter(Boolean));
+}
+
+function renderNameList() {
+  const container = document.getElementById('seat-name-items');
+  if (!container) return;
+  const placed = getPlacedNames();
+  container.innerHTML = '';
+  if (studentNames.length === 0) {
+    container.innerHTML = '<div style="color:var(--text3);font-size:12px;font-weight:600;padding:6px 0;">No students yet.</div>';
+    return;
+  }
+  studentNames.forEach(name => {
+    const isPlaced = placed.has(name);
+    const item = document.createElement('div');
+    item.className = 'seat-name-item' + (isPlaced ? ' placed' : '');
+    item.draggable = !isPlaced;
+    item.innerHTML = `<span>${name}</span><button class="del-btn" onclick="removeStudentName('${name.replace(/'/g,"\\'")}')">✕</button>`;
+
+    item.addEventListener('dragstart', (e) => {
+      if (isPlaced) { e.preventDefault(); return; }
+      dragSource = { type: 'name', name };
+      e.dataTransfer.effectAllowed = 'move';
+    });
+
+    container.appendChild(item);
+  });
+}
+
+// ═══════════════════════════════════════
+// DYNAMICS METER
+// ═══════════════════════════════════════
+function updateDynamicsVal(v) {
+  const labels = ['', 'Harmonious', 'Relaxed', 'Mixed', 'Tense', 'Challenging'];
+  document.getElementById('dynamics-val').textContent = v;
+  document.getElementById('dynamics-val').title = labels[v] || '';
+}
+
+function optimizeSeating() {
+  const dynamicsLevel = parseInt(document.getElementById('dynamics-slider').value);
+  const names = studentNames.filter(n => n);
+  if (names.length === 0) { alert('Add students to the list first.'); return; }
+
+  // Build a score matrix: positive = prefer together, negative = prefer apart
+  // dynamics 1 = friends together (normal), 5 = rivals together (chaos mode)
+  const scores = {};
+  relationships.forEach(rel => {
+    const key = [rel.a, rel.b].sort().join('|||');
+    // friend: base score +1, rival: base score -1
+    let base = rel.type === 'friend' ? 1 : -1;
+    // At dynamics 1: friends +, rivals -
+    // At dynamics 5: invert (friends -, rivals +)
+    const factor = dynamicsLevel <= 3
+      ? 1 - (dynamicsLevel - 1) * 0.4   // 1→1, 2→0.6, 3→0.2
+      : -(dynamicsLevel - 3) * 0.5;      // 4→-0.5, 5→-1
+    scores[key] = base * factor;
+  });
+
+  // Greedy placement: fill cells row by row
+  // Score each remaining name for each empty cell based on already-placed neighbours
+  const totalCells = seatRows * seatCols;
+  const toPlace = [...names].slice(0, totalCells);
+  const placed = {}; // key -> name
+  const unplaced = [...toPlace];
+
+  // Helper: get placed neighbours of a cell
+  const getNeighbourNames = (r, c) => {
+    const dirs = [[-1,0],[1,0],[0,-1],[0,1]];
+    return dirs.map(([dr,dc]) => {
+      const k = seatKey(r+dr, c+dc);
+      return placed[k] || null;
+    }).filter(Boolean);
+  };
+
+  const getPairScore = (a, b) => {
+    const key = [a, b].sort().join('|||');
+    return scores[key] || 0;
+  };
+
+  // Place first name in first cell
+  if (unplaced.length > 0) {
+    placed[seatKey(0,0)] = unplaced.shift();
+  }
+
+  // For each remaining cell, pick the best-scoring unplaced name
+  for (let r = 0; r < seatRows; r++) {
+    for (let c = 0; c < seatCols; c++) {
+      const k = seatKey(r, c);
+      if (placed[k]) continue;
+      if (unplaced.length === 0) break;
+
+      const neighbours = getNeighbourNames(r, c);
+      let bestName = unplaced[0];
+      let bestScore = -Infinity;
+
+      unplaced.forEach(name => {
+        const s = neighbours.reduce((acc, nb) => acc + getPairScore(name, nb), 0);
+        if (s > bestScore) { bestScore = s; bestName = name; }
+      });
+
+      placed[k] = bestName;
+      unplaced.splice(unplaced.indexOf(bestName), 1);
+    }
+  }
+
+  // Apply to seatData
+  Object.keys(placed).forEach(k => {
+    if (!seatData[k]) seatData[k] = {};
+    seatData[k].name = placed[k];
+  });
+  renderSeatGrid();
+}
+
+// ═══════════════════════════════════════
+// RELATIONSHIP KANBAN — Groups + Rivals
+// ═══════════════════════════════════════
+
+let friendGroups = [];
+let rivals = [];
+let relationships = []; // flat, for optimizer
+let kanbanDragName = null; // name being dragged
+let kanbanDragSource = null; // 'pool' | groupId
+
+const GROUP_COLORS = [
+  { bg: '#dbeafe', border: '#93c5fd', text: '#1d4ed8', dot: '#2563eb' },
+  { bg: '#dcfce7', border: '#86efac', text: '#15803d', dot: '#16a34a' },
+  { bg: '#fef9c3', border: '#fde047', text: '#a16207', dot: '#ca8a04' },
+  { bg: '#f3e8ff', border: '#d8b4fe', text: '#7e22ce', dot: '#9333ea' },
+  { bg: '#fce7f3', border: '#f9a8d4', text: '#be185d', dot: '#db2777' },
+  { bg: '#e0f2fe', border: '#7dd3fc', text: '#0369a1', dot: '#0891b2' },
+  { bg: '#ffedd5', border: '#fdba74', text: '#c2410c', dot: '#ea580c' },
+  { bg: '#f0fdf4', border: '#6ee7b7', text: '#047857', dot: '#059669' },
+];
+
+function loadRelationships() {
+  try {
+    const sg = localStorage.getItem('lern-friend-groups');
+    friendGroups = sg ? JSON.parse(sg) : [];
+    const sr = localStorage.getItem('lern-rivals');
+    rivals = sr ? JSON.parse(sr) : [];
+    // Legacy migration
+    if (!sg && !sr) {
+      const old = localStorage.getItem('lern-relationships');
+      if (old) {
+        const oldRels = JSON.parse(old);
+        oldRels.filter(r => r.type === 'friend').forEach((r, i) => {
+          const col = GROUP_COLORS[i % GROUP_COLORS.length];
+          friendGroups.push({ id: Date.now() + i, name: `Group ${i+1}`, col, members: [r.a, r.b] });
+        });
+        rivals = oldRels.filter(r => r.type === 'rival').map(r => ({ a: r.a, b: r.b }));
+      }
+    }
+    // Ensure col objects exist (old saves used string colors)
+    friendGroups.forEach((g, i) => {
+      if (!g.col || typeof g.col === 'string') g.col = GROUP_COLORS[i % GROUP_COLORS.length];
+    });
+  } catch(e) { console.warn(e); }
+  rebuildRelationships();
+}
+
+function saveRelData() {
+  localStorage.setItem('lern-friend-groups', JSON.stringify(friendGroups));
+  localStorage.setItem('lern-rivals', JSON.stringify(rivals));
+  rebuildRelationships();
+}
+
+function rebuildRelationships() {
+  relationships = [];
+  friendGroups.forEach(g => {
+    for (let i = 0; i < g.members.length; i++)
+      for (let j = i+1; j < g.members.length; j++)
+        relationships.push({ a: g.members[i], b: g.members[j], type: 'friend' });
+  });
+  rivals.forEach(r => relationships.push({ a: r.a, b: r.b, type: 'rival' }));
+}
+
+// ── Open / Close ──
+function openRelPanel() {
+  document.getElementById('rel-panel').classList.add('open');
+  renderKanban();
+}
+
+function closeRelPanel() {
+  document.getElementById('rel-panel').classList.remove('open');
+}
+
+// ── Kanban render ──
+function renderKanban() {
+  renderPool();
+  renderColumns();
+  renderRivalChips();
+}
+
+function getAssignedNames() {
+  const s = new Set();
+  friendGroups.forEach(g => g.members.forEach(m => s.add(m)));
+  return s;
+}
+
+function renderPool() {
+  const container = document.getElementById('rel-pool-chips');
+  if (!container) return;
+  const assigned = getAssignedNames();
+  const unassigned = studentNames.filter(n => !assigned.has(n));
+  container.innerHTML = '';
+  if (unassigned.length === 0) {
+    container.innerHTML = '<span style="color:var(--text3);font-size:12px;font-weight:600;">All students assigned 🎉</span>';
+    return;
+  }
+  unassigned.forEach(name => {
+    const chip = document.createElement('div');
+    chip.className = 'rel-student-chip';
+    chip.textContent = name;
+    chip.draggable = true;
+    chip.addEventListener('dragstart', e => {
+      kanbanDragName = name;
+      kanbanDragSource = 'pool';
+      chip.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
+    container.appendChild(chip);
+  });
+}
+
+function renderColumns() {
+  const kanban = document.getElementById('rel-kanban');
+  if (!kanban) return;
+  // Remove all cols (keep the add button at end)
+  kanban.innerHTML = '';
+
+  friendGroups.forEach(g => {
+    const col = document.createElement('div');
+    col.className = 'rel-kanban-col';
+    col.style.borderColor = g.col.border;
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'rel-col-header';
+    header.style.background = g.col.bg;
+    header.style.borderBottomColor = g.col.border;
+
+    const dot = document.createElement('div');
+    dot.className = 'rel-col-dot';
+    dot.style.background = g.col.dot;
+
+    const nameInput = document.createElement('input');
+    nameInput.className = 'rel-col-name-input';
+    nameInput.value = g.name;
+    nameInput.style.color = g.col.text;
+    nameInput.onchange = () => { g.name = nameInput.value.trim() || g.name; saveRelData(); };
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'rel-col-del';
+    delBtn.textContent = '✕';
+    delBtn.onclick = () => {
+      // Return members to pool
+      friendGroups = friendGroups.filter(x => x.id !== g.id);
+      saveRelData();
+      renderKanban();
+    };
+
+    header.appendChild(dot);
+    header.appendChild(nameInput);
+    header.appendChild(delBtn);
+
+    // Body
+    const body = document.createElement('div');
+    body.className = 'rel-col-body';
+    body.style.background = g.col.bg + '55';
+
+    g.members.forEach(name => {
+      const chip = document.createElement('div');
+      chip.className = 'rel-member-chip';
+      chip.style.background = g.col.bg;
+      chip.style.borderColor = g.col.border;
+      chip.style.color = g.col.text;
+      chip.draggable = true;
+      chip.innerHTML = `<span>${name}</span><button class="rm-btn" title="Remove from group">✕</button>`;
+      chip.querySelector('.rm-btn').onclick = (e) => {
+        e.stopPropagation();
+        g.members = g.members.filter(m => m !== name);
+        saveRelData();
+        renderKanban();
+      };
+      chip.addEventListener('dragstart', e => {
+        kanbanDragName = name;
+        kanbanDragSource = g.id;
+        chip.style.opacity = '0.4';
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      chip.addEventListener('dragend', () => chip.style.opacity = '1');
+      body.appendChild(chip);
+    });
+
+    if (g.members.length === 0) {
+      const empty = document.createElement('div');
+      empty.style.cssText = 'font-size:12px;color:var(--text3);font-weight:600;text-align:center;padding:8px 0;';
+      empty.textContent = 'Drop students here';
+      body.appendChild(empty);
+    }
+
+    // Drop handling
+    col.addEventListener('dragover', e => { e.preventDefault(); col.classList.add('drag-over'); });
+    col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
+    col.addEventListener('drop', e => {
+      e.preventDefault();
+      col.classList.remove('drag-over');
+      if (!kanbanDragName) return;
+      // Remove from source
+      if (kanbanDragSource !== 'pool') {
+        const src = friendGroups.find(x => x.id === kanbanDragSource);
+        if (src) src.members = src.members.filter(m => m !== kanbanDragName);
+      }
+      // Add to this group if not already there
+      if (!g.members.includes(kanbanDragName)) g.members.push(kanbanDragName);
+      kanbanDragName = null;
+      kanbanDragSource = null;
+      saveRelData();
+      renderKanban();
+    });
+
+    col.appendChild(header);
+    col.appendChild(body);
+    kanban.appendChild(col);
+  });
+
+  // Add group button
+  const addBtn = document.createElement('div');
+  addBtn.className = 'rel-add-col';
+  addBtn.innerHTML = '<span style="font-size:22px;">＋</span><span>New Group</span>';
+  addBtn.onclick = addFriendGroup;
+  // Allow dropping on add button to create new group
+  addBtn.addEventListener('dragover', e => { e.preventDefault(); addBtn.style.borderColor = 'var(--blue)'; addBtn.style.color = 'var(--blue)'; });
+  addBtn.addEventListener('dragleave', () => { addBtn.style.borderColor = ''; addBtn.style.color = ''; });
+  addBtn.addEventListener('drop', e => {
+    e.preventDefault();
+    addBtn.style.borderColor = '';
+    addBtn.style.color = '';
+    if (!kanbanDragName) return;
+    addFriendGroupWithMember(kanbanDragName);
+    kanbanDragName = null;
+    kanbanDragSource = null;
+  });
+  kanban.appendChild(addBtn);
+
+  // Pool also accepts drops (return to unassigned)
+  const pool = document.getElementById('rel-pool-chips');
+  const poolWrap = pool?.closest('.rel-pool');
+  if (poolWrap) {
+    poolWrap.addEventListener('dragover', e => { e.preventDefault(); poolWrap.style.borderColor = 'var(--blue)'; });
+    poolWrap.addEventListener('dragleave', () => poolWrap.style.borderColor = 'var(--border)'); 
+    poolWrap.addEventListener('drop', e => {
+      e.preventDefault();
+      poolWrap.style.borderColor = 'var(--border)';
+      if (!kanbanDragName || kanbanDragSource === 'pool') return;
+      const src = friendGroups.find(x => x.id === kanbanDragSource);
+      if (src) src.members = src.members.filter(m => m !== kanbanDragName);
+      kanbanDragName = null;
+      kanbanDragSource = null;
+      saveRelData();
+      renderKanban();
+    });
+  }
+}
+
+function renderRivalChips() {
+  const container = document.getElementById('rel-rival-chips');
+  if (!container) return;
+  container.innerHTML = '';
+  if (rivals.length === 0) {
+    container.innerHTML = '<span style="color:var(--text3);font-size:12px;font-weight:600;">None set.</span>';
+    return;
+  }
+  rivals.forEach((r, i) => {
+    const chip = document.createElement('span');
+    chip.className = 'rel-rival-chip';
+    chip.innerHTML = `${r.a} ↔ ${r.b} <button onclick="deleteRival(${i})">✕</button>`;
+    container.appendChild(chip);
+  });
+}
+
+// ── Groups CRUD ──
+function addFriendGroup() {
+  const col = GROUP_COLORS[friendGroups.length % GROUP_COLORS.length];
+  friendGroups.push({ id: Date.now(), name: `Group ${friendGroups.length + 1}`, col, members: [] });
+  saveRelData();
+  renderKanban();
+}
+
+function addFriendGroupWithMember(name) {
+  // Remove from any existing group first
+  friendGroups.forEach(g => { g.members = g.members.filter(m => m !== name); });
+  const col = GROUP_COLORS[friendGroups.length % GROUP_COLORS.length];
+  friendGroups.push({ id: Date.now(), name: `Group ${friendGroups.length + 1}`, col, members: [name] });
+  saveRelData();
+  renderKanban();
+}
+
+// ── Rivals ──
+let rivalPickerSelected = [];
+
+function openRivalPicker() {
+  rivalPickerSelected = [];
+  const grid = document.getElementById('rival-picker-grid');
+  grid.innerHTML = '';
+  studentNames.forEach(name => {
+    const chip = document.createElement('button');
+    chip.className = 'rival-picker-chip';
+    chip.textContent = name;
+    chip.onclick = () => {
+      if (chip.classList.contains('selected')) {
+        chip.classList.remove('selected');
+        rivalPickerSelected = rivalPickerSelected.filter(n => n !== name);
+      } else if (rivalPickerSelected.length < 2) {
+        chip.classList.add('selected');
+        rivalPickerSelected.push(name);
+      }
+    };
+    grid.appendChild(chip);
+  });
+  document.getElementById('rival-picker').classList.add('open');
+}
+
+function closeRivalPicker() {
+  document.getElementById('rival-picker').classList.remove('open');
+  rivalPickerSelected = [];
+}
+
+function confirmRivalPick() {
+  if (rivalPickerSelected.length !== 2) { alert('Pick exactly 2 students.'); return; }
+  const [a, b] = rivalPickerSelected;
+  const exists = rivals.find(r => (r.a===a&&r.b===b)||(r.a===b&&r.b===a));
+  if (!exists) { rivals.push({ a, b }); saveRelData(); }
+  closeRivalPicker();
+  renderRivalChips();
+}
+
+function deleteRival(i) {
+  rivals.splice(i, 1);
+  saveRelData();
+  renderRivalChips();
+}
+
+// ── Stubs so old call sites don't break ──
+function drawRelWeb() {}
+function handleRelCanvasClick() {}
+function setRelTab() {}
+function renderRelList() {}
+function renderGroupList() {}
+
+// ═══════════════════════════════════════
+// GEMINI API
+// ═══════════════════════════════════════
+async function callGemini(prompt, retries = 3) {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { maxOutputTokens: 2048 }
+        })
+      }
+    );
+
+    if (res.status === 429) {
+      if (attempt < retries - 1) {
+        const wait = (attempt + 1) * 8000; // 8s, 16s, 24s
+        await new Promise(r => setTimeout(r, wait));
+        continue;
+      } else {
+        throw new Error('Rate limit reached. You\'ve hit Gemini\'s free tier limit. Please wait a minute and try again.');
+      }
+    }
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || 'API error');
+    }
+
+    const data = await res.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  }
+}
+
+function buildContext() {
+  return `Teacher: ${profile.name || 'Teacher'} | Country: ${profile.country || 'Malaysia'} | School: ${profile.schoolType || ''} | Subjects: ${profile.subjectLabel || ''} | Year Groups: ${profile.year || ''} | Class Size: ${profile.classSize || ''} | Notes: ${profile.notes || 'None'}. Current month: ${currentMonth} ${currentYear}.`;
+}
+
+// ═══════════════════════════════════════
+// QUIZ BACKGROUND CACHE
+// ═══════════════════════════════════════
+const QUIZ_TOPICS = {
+  'Mathematics': ['Fractions', 'Algebra basics', 'Geometry', 'Statistics', 'Percentages'],
+  'English': ['Grammar & punctuation', 'Reading comprehension', 'Vocabulary', 'Essay writing', 'Tenses'],
+  'Science': ['The water cycle', 'Photosynthesis', 'Forces and motion', 'Cells', 'States of matter'],
+  'Bahasa Malaysia': ['Tatabahasa', 'Peribahasa', 'Karangan', 'Pemahaman', 'Kosa kata'],
+  'History': ['Independence', 'World War II', 'Ancient civilisations', 'Colonial era', 'Formation of Malaysia'],
+  'Geography': ['Landforms', 'Climate', 'Population', 'Resources', 'Map skills'],
+  'ICT': ['Internet safety', 'Spreadsheets', 'Algorithms', 'Hardware vs software', 'Databases'],
+  'Moral Education': ['Nilai murni', 'Patriotisme', 'Tanggungjawab', 'Hormat', 'Kejujuran'],
+};
+const DEFAULT_TOPICS = ['Key concepts', 'Vocabulary & definitions', 'True/False fundamentals', 'Mixed review', 'Short answer practice'];
+
+async function backgroundCacheQuizzes() {
+  const subjects = profile.subjects?.length ? profile.subjects : [profile.subjectLabel || 'General'];
+  const year = profile.year || 'secondary';
+  const cacheKey = `lern-quiz-cache-${subjects.join(',')}-${currentMonth}${currentYear}`;
+
+  // Skip if already cached this session
+  if (sessionStorage.getItem(cacheKey)) return;
+
+  showCacheToast('Caching quiz fallbacks in background…');
+
+  const cache = {};
+
+  for (const subject of subjects.slice(0, 3)) { // max 3 subjects to avoid hammering API
+    const topics = QUIZ_TOPICS[subject] || DEFAULT_TOPICS;
+    cache[subject] = [];
+
+    for (let i = 0; i < Math.min(5, topics.length); i++) {
+      const topic = topics[i];
+      try {
+        const prompt = `Generate a 10-question moderate quiz for ${subject}, Year/Form: ${year}, Topic: ${topic}.
+Include Mixed question types (MCQ, Short Answer, True/False). Include answer key at the end after "--- ANSWER KEY ---".
+Write plainly. No decorative language.`;
+        const result = await callGemini(prompt, 1); // single attempt only for cache
+        cache[subject].push({ topic, content: result });
+        showCacheToast(`Cached: ${subject} — ${topic} (${i+1}/5)`);
+        await new Promise(r => setTimeout(r, 3000)); // 3s gap between requests
+      } catch {
+        // silently skip failed cache attempts
+      }
+    }
+  }
+
+  try {
+    localStorage.setItem('lern-quiz-cache', JSON.stringify(cache));
+    sessionStorage.setItem(cacheKey, '1');
+  } catch { /* storage full — skip */ }
+
+  hideCacheToast();
+}
+
+function showCacheToast(msg) {
+  const toast = document.getElementById('cache-toast');
+  document.getElementById('cache-toast-text').textContent = msg;
+  toast.classList.add('visible');
+}
+
+function hideCacheToast() {
+  setTimeout(() => document.getElementById('cache-toast').classList.remove('visible'), 2000);
+}
+
+function getQuizFromCache(subject, topic) {
+  try {
+    const cache = JSON.parse(localStorage.getItem('lern-quiz-cache') || '{}');
+    const subjectCache = cache[subject] || [];
+    // Find exact topic or first available
+    const match = subjectCache.find(q => q.topic.toLowerCase().includes(topic.toLowerCase()))
+      || subjectCache[0];
+    return match?.content || null;
+  } catch { return null; }
+}
+
+function renderMarkdown(text) {
+  return text
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/^(?!<[hul])/gm, '')
+    || text;
+}
+
+// ═══════════════════════════════════════
+// PLAN TOOL
+// ═══════════════════════════════════════
+function setPlanMode(mode) {
+  const isAI = mode === 'ai';
+  document.getElementById('plan-ai-section').style.display = isAI ? '' : 'none';
+  document.getElementById('plan-manual-section').style.display = isAI ? 'none' : '';
+  document.getElementById('plan-mode-ai').className = 'btn btn-sm ' + (isAI ? 'btn-primary' : 'btn-secondary');
+  document.getElementById('plan-mode-manual').className = 'btn btn-sm ' + (!isAI ? 'btn-primary' : 'btn-secondary');
+}
+
+async function generatePlan() {
+  const subject = document.getElementById('plan-subject').value.trim() || profile.subjectLabel || 'General';
+  const year = document.getElementById('plan-year').value.trim() || profile.year || '';
+  const topic = document.getElementById('plan-topic').value.trim();
+  const duration = document.getElementById('plan-duration').value;
+  const objectives = document.getElementById('plan-objectives').value.trim();
+  const special = document.getElementById('plan-special').value.trim();
+
+  if (!topic) { alert('Please enter a topic first.'); return; }
+
+  setLoading('plan', true);
+
+  const prompt = `You are writing a lesson plan. Output only the plan — no commentary, no preamble, no motivational language.
+
+Details:
+- Subject: ${subject}
+- Year/Form: ${year}
+- Topic: ${topic}
+- Duration: ${duration} minutes
+- Objectives: ${objectives || 'Standard for this level'}
+- Special requirements: ${special || 'None'}
+- Date: ${currentMonth} ${currentYear}
+- Teacher context: ${buildContext()}
+
+Output the plan using exactly these section headers, in this order:
+
+## Lesson Overview
+Subject | Year | Topic | Duration | Date
+
+## Learning Objectives
+List 3–5 objectives. Use plain language. Start each with a verb (e.g. "Identify", "Calculate", "Explain"). No filler.
+
+## Materials & Resources
+Bullet list. Specific items only.
+
+## Introduction
+Time allocation. What the teacher does/says to open the lesson. Plain description, no hype.
+
+## Main Activity
+Time-stamped steps. What is taught and how. Factual sequence.
+
+## Assessment
+How understanding is checked during the lesson. Specific method only.
+
+## Closure
+What happens in the last few minutes. Brief.
+
+## Homework / Extension
+Specific task. If none, write "None."
+
+## Differentiation
+Weaker students: [specific adjustment]
+Stronger students: [specific adjustment]
+
+## Teacher's Notes
+Any logistics, common mistakes to watch for, or prep reminders.
+
+Rules:
+- Write like a document, not a motivational speech
+- No phrases like "engaging", "spark curiosity", "foster", "dynamic", "exciting", "empower"
+- No rhetorical questions
+- Be specific and direct
+- Use plain prose or bullet points, not both mixed`;
+
+  try {
+    const result = await callGemini(prompt);
+    const box = document.getElementById('plan-output');
+    box.innerHTML = renderMarkdown(result);
+    box.classList.add('visible');
+    document.getElementById('plan-actions').style.display = 'flex';
+  } catch (e) {
+    showError('plan', e.message);
+  } finally {
+    setLoading('plan', false);
+  }
+}
+
+function renderManualPlan() {
+  const get = id => document.getElementById(id).value.trim();
+  const subject = get('pm-subject') || '—';
+  const year = get('pm-year') || '—';
+  const topic = get('pm-topic') || '—';
+  const date = get('pm-date') || '—';
+  const duration = get('pm-duration') || '—';
+
+  const sections = [
+    ['Learning Objectives', get('pm-objectives')],
+    ['Materials & Resources', get('pm-materials')],
+    ['Introduction / Set Induction', get('pm-intro')],
+    ['Main Activity / Teaching Steps', get('pm-main')],
+    ['Assessment / Checking Understanding', get('pm-assess')],
+    ['Closure', get('pm-closure')],
+    ['Homework / Extension', get('pm-homework')],
+    ['Differentiation', get('pm-diff')],
+    ["Teacher's Notes", get('pm-notes')],
+  ];
+
+  const sectionsHTML = sections.map(([title, val]) => `
+    <h2>${title}</h2>
+    <p style="white-space:pre-wrap;min-height:48px;border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:4px;">${val || ''}</p>
+  `).join('');
+
+  const output = document.getElementById('plan-manual-output');
+  output.innerHTML = `
+    <h2 style="font-size:20px;font-weight:800;margin-bottom:4px;">Lesson Plan</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 24px;margin-bottom:20px;font-size:14px;color:var(--text2);">
+      <div><strong>Subject:</strong> ${subject}</div>
+      <div><strong>Year / Form:</strong> ${year}</div>
+      <div><strong>Topic:</strong> ${topic}</div>
+      <div><strong>Date:</strong> ${date}</div>
+      <div><strong>Duration:</strong> ${duration} min</div>
+      <div><strong>Teacher:</strong> ${profile.name || '—'}</div>
+    </div>
+    ${sectionsHTML}
+  `;
+  output.style.display = 'block';
+  document.getElementById('plan-manual-form').style.display = 'none';
+  document.getElementById('plan-manual-actions').style.display = 'flex';
+}
+
+function clearManualPlan() {
+  if (!confirm('Clear all fields?')) return;
+  ['pm-subject','pm-year','pm-topic','pm-date','pm-objectives','pm-materials','pm-intro','pm-main','pm-assess','pm-closure','pm-homework','pm-diff','pm-notes'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+}
+
+// ═══════════════════════════════════════
+// MARK TOOL
+// ═══════════════════════════════════════
+async function generateMark() {
+  const name = document.getElementById('mark-name').value.trim();
+  const perf = document.getElementById('mark-perf').value;
+  const strengths = document.getElementById('mark-strengths').value.trim();
+  const improve = document.getElementById('mark-improve').value.trim();
+  const subject = document.getElementById('mark-subject').value.trim() || profile.subjectLabel || '';
+  const tone = document.getElementById('mark-tone').value;
+
+  if (!name) { alert('Please enter the student\'s name.'); return; }
+
+  setLoading('mark', true);
+
+  const prompt = `You are a ${profile.schoolType || 'school'} teacher writing a formal report card comment. Context: ${buildContext()}
+
+Write a ${tone} report card comment for:
+- Student Name: ${name}
+- Subject: ${subject || 'General'}
+- Overall Performance: ${perf}
+- Key Strengths: ${strengths || 'To be determined by context'}
+- Areas to Improve: ${improve || 'General improvement'}
+- Month: ${currentMonth} ${currentYear}
+
+Guidelines:
+- 3–5 sentences, paragraph form (no bullets)
+- Use the student's name at least twice
+- Be specific about strengths and improvements
+- Tone must be ${tone}
+- Avoid clichés like "a pleasure to teach"
+- End with an encouraging forward-looking statement
+- Do NOT include any labels, headers, or explanatory text — just the comment itself
+
+Write the report comment now:`;
+
+  try {
+    const result = await callGemini(prompt);
+    document.getElementById('mark-output').textContent = result.trim();
+    document.getElementById('mark-output-wrap').classList.add('visible');
+  } catch (e) {
+    showError('mark', e.message);
+  } finally {
+    setLoading('mark', false);
+  }
+}
+
+function copyMarkComment() {
+  const text = document.getElementById('mark-output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+
+// ═══════════════════════════════════════
+// QUIZ TOOL
+// ═══════════════════════════════════════
+async function generateQuiz() {
+  const subject = document.getElementById('quiz-subject').value.trim() || profile.subjectLabel || 'General';
+  const year = document.getElementById('quiz-year').value.trim() || profile.year || '';
+  const topic = document.getElementById('quiz-topic').value.trim();
+  const count = document.getElementById('quiz-count').value;
+  const diff = document.getElementById('quiz-diff').value;
+  const types = getSelectedChips('qtype-chips');
+  const answerKey = getSelectedChips('answerkey-chips').includes('yes');
+
+  if (!topic) { alert('Please enter a topic first.'); return; }
+  if (types.length === 0) { alert('Please select at least one question type.'); return; }
+
+  setLoading('quiz', true);
+
+  const prompt = `You are an experienced ${subject} teacher creating a printable quiz/worksheet. Context: ${buildContext()}
+
+Create a ${diff} quiz with the following specifications:
+- Subject: ${subject}
+- Year/Form: ${year}
+- Topic: ${topic}
+- Number of Questions: ${count}
+- Question Types to include: ${types.join(', ')}
+- Include Answer Key: ${answerKey ? 'Yes' : 'No'}
+- Month (for seasonal examples if relevant): ${currentMonth}
+
+Format requirements:
+1. Header: School name line (blank), Class/Form line (blank), Student Name line (blank), Date line (blank), Subject, Topic, Total Marks
+2. Clear instructions for each section/question type
+3. For MCQ: provide 4 options labelled A, B, C, D
+4. Numbered questions clearly
+5. Leave space for student answers (indicate with lines or brackets)
+6. If answer key requested, add it at the very end clearly separated with "--- ANSWER KEY ---"
+
+Make the quiz age-appropriate for ${year} students, curriculum-aligned, and ready to print.`;
+
+  try {
+    const result = await callGemini(prompt);
+    const box = document.getElementById('quiz-output');
+    box.innerHTML = renderMarkdown(result);
+    box.classList.add('visible');
+    document.getElementById('quiz-actions').style.display = 'flex';
+  } catch (e) {
+    // Try cache fallback
+    const cached = getQuizFromCache(subject, topic);
+    if (cached) {
+      const box = document.getElementById('quiz-output');
+      box.innerHTML = '<div style="background:var(--blue-light);color:var(--blue);padding:8px 14px;border-radius:6px;font-size:13px;font-weight:700;margin-bottom:12px;">⚡ Showing cached quiz — API unavailable</div>' + renderMarkdown(cached);
+      box.classList.add('visible');
+      document.getElementById('quiz-actions').style.display = 'flex';
+    } else {
+      showError('quiz', e.message);
+    }
+  } finally {
+    setLoading('quiz', false);
+  }
+}
+
+// ═══════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════
+function setLoading(tool, on, msg) {
+  const wrap = document.getElementById(tool + '-loading');
+  wrap.classList.toggle('visible', on);
+  if (on && msg) {
+    const span = wrap.querySelector('span.loading-msg');
+    if (span) span.textContent = msg;
+  } else if (on) {
+    const span = wrap.querySelector('span.loading-msg');
+    if (span) {
+      if (tool === 'mark') span.textContent = 'Writing your report comment…';
+      else if (tool === 'plan') span.textContent = 'Generating your lesson plan…';
+      else if (tool === 'quiz') span.textContent = 'Building your quiz…';
+    }
+  }
+  document.getElementById(tool + '-error').classList.remove('visible');
+}
+
+function showError(tool, msg) {
+  const el = document.getElementById(tool + '-error');
+  el.textContent = '⚠️ Something went wrong: ' + msg + '. Please check your connection and try again.';
+  el.classList.add('visible');
+}
+
+function copyOutput(boxId) {
+  const box = document.getElementById(boxId);
+  const text = box.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+
+// Close note modal on overlay click
+document.getElementById('note-modal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('note-modal')) closeNoteModal();
+});
+
+// Fix grid on mobile
+const style = document.createElement('style');
+style.textContent = `@media(max-width:600px){.plan-grid{grid-template-columns:1fr!important;}.plan-grid .form-group{grid-column:1!important;}}`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>
