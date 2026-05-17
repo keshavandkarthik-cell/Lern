@@ -780,299 +780,274 @@ body {
 }
 .seat-rel-btn:hover { border-color: var(--blue); color: var(--blue); }
 
-/* Groups modal — full screen overlay */
+/* ═══════════════════════════════════════
+   GROUPS & RIVALS — IMMERSIVE FULL-SCREEN
+═══════════════════════════════════════ */
+
 .rel-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 300;
-  display: none;
-  flex-direction: column;
-  background: var(--bg);
+  position: fixed; inset: 0; z-index: 300;
+  display: none; flex-direction: column;
+  background: var(--bg); overflow: hidden;
 }
 .rel-modal.open { display: flex; }
 
-.rel-modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 28px;
-  background: var(--surface);
-  border-bottom: 1.5px solid var(--border);
-  flex-shrink: 0;
+.rel-topbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 20px; height: 60px;
+  background: var(--surface); border-bottom: 1.5px solid var(--border); flex-shrink: 0;
 }
-.rel-modal-title { font-size: 20px; font-weight: 800; color: var(--text); }
-.rel-modal-close {
-  background: var(--surface2);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 8px 16px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  color: var(--text2);
-  transition: all 0.15s;
+.rel-topbar-title { flex: 1; font-size: 18px; font-weight: 900; color: var(--text); }
+.rel-topbar-close {
+  width: 38px; height: 38px; border-radius: 50%; border: none;
+  background: var(--surface2); font-size: 18px; cursor: pointer; color: var(--text2);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.rel-modal-close:hover { background: var(--border); color: var(--text); }
+.rel-topbar-close:hover { background: var(--border); }
 
-.rel-modal-body {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  padding: 20px 28px;
-  gap: 16px;
+.rel-content {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 20px 16px 100px;
 }
 
-/* Unassigned pool */
-.rel-pool {
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 18px;
-  flex-shrink: 0;
-}
-.rel-pool-title {
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text3);
-  margin-bottom: 10px;
+.rel-pool-section { margin-bottom: 24px; }
+.rel-section-label {
+  font-size: 11px; font-weight: 900; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text3); margin-bottom: 10px; padding-left: 2px;
 }
 .rel-pool-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  min-height: 32px;
+  display: flex; flex-wrap: wrap; gap: 8px; min-height: 44px; padding: 12px;
+  background: var(--surface); border: 2px dashed var(--border); border-radius: var(--radius);
+  transition: border-color 0.15s, background 0.15s;
 }
+.rel-pool-chips.drag-over { border-color: var(--blue); background: var(--blue-light); }
+
 .rel-student-chip {
-  padding: 5px 12px;
-  border-radius: 999px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: grab;
-  user-select: none;
-  transition: all 0.15s;
-  border: 1.5px solid var(--border);
-  background: var(--surface2);
-  color: var(--text);
+  padding: 8px 16px; border-radius: 999px;
+  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700;
+  cursor: grab; user-select: none; border: 2px solid var(--border);
+  background: var(--surface2); color: var(--text); touch-action: none;
+  transition: transform 0.12s; -webkit-tap-highlight-color: transparent;
 }
-.rel-student-chip:hover { border-color: var(--blue); color: var(--blue); }
-.rel-student-chip.dragging { opacity: 0.4; }
+.rel-student-chip:active { transform: scale(0.95); }
+.rel-student-chip.dragging { opacity: 0.35; }
 
-/* Kanban board */
-.rel-kanban {
-  flex: 1;
-  overflow-x: auto;
-  overflow-y: hidden;
-  display: flex;
-  gap: 14px;
-  padding-bottom: 8px;
+.rel-groups-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px; margin-bottom: 12px;
 }
 
-.rel-kanban-col {
-  width: 200px;
-  min-width: 200px;
-  display: flex;
-  flex-direction: column;
-  border-radius: var(--radius);
-  border: 2px solid var(--border);
-  background: var(--surface);
-  overflow: hidden;
-  flex-shrink: 0;
+.rel-group-card {
+  border-radius: var(--radius); border: 2px solid var(--border);
+  overflow: hidden; display: flex; flex-direction: column; min-height: 140px;
+  transition: box-shadow 0.15s;
 }
-.rel-kanban-col.drag-over {
-  border-style: dashed;
-  background: var(--blue-light);
+.rel-group-card.drag-over { box-shadow: 0 0 0 3px var(--blue); border-color: var(--blue); }
+
+.rel-group-card-header {
+  padding: 10px 12px; display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+}
+.rel-group-card-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.rel-group-card-name {
+  flex: 1; border: none; background: transparent;
+  font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 900;
+  outline: none; min-width: 0; padding: 0;
+}
+.rel-group-card-del {
+  background: none; border: none; cursor: pointer; font-size: 13px;
+  opacity: 0.4; padding: 2px 4px; border-radius: 4px; line-height: 1; flex-shrink: 0;
+}
+.rel-group-card-del:hover { opacity: 1; color: var(--danger); }
+
+.rel-group-card-body {
+  flex: 1; padding: 8px 10px 10px; display: flex; flex-direction: column;
+  gap: 5px; overflow-y: auto;
 }
 
-.rel-col-header {
-  padding: 10px 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-bottom: 1.5px solid var(--border);
+.rel-member-pill {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 10px; border-radius: 8px; font-size: 13px; font-weight: 700;
+  cursor: grab; user-select: none; touch-action: none;
+  -webkit-tap-highlight-color: transparent; transition: opacity 0.12s;
 }
-.rel-col-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  flex-shrink: 0;
+.rel-member-pill:active { opacity: 0.6; }
+.rel-member-pill .rm-x {
+  background: none; border: none; cursor: pointer;
+  font-size: 12px; opacity: 0.45; padding: 0; line-height: 1; color: inherit; flex-shrink: 0;
 }
-.rel-col-name-input {
-  flex: 1;
-  border: none;
-  background: transparent;
-  font-family: 'Nunito', sans-serif;
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--text);
-  outline: none;
-  min-width: 0;
-}
-.rel-col-del {
-  background: none;
-  border: none;
-  color: var(--text3);
-  cursor: pointer;
-  font-size: 14px;
-  padding: 0 2px;
-  line-height: 1;
-  flex-shrink: 0;
-}
-.rel-col-del:hover { color: var(--danger); }
+.rel-member-pill .rm-x:hover { opacity: 1; }
 
-.rel-col-body {
-  flex: 1;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-height: 80px;
-  overflow-y: auto;
+.rel-group-empty {
+  font-size: 12px; font-weight: 600; text-align: center;
+  padding: 10px 4px; opacity: 0.45; line-height: 1.5;
 }
 
-.rel-member-chip {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 10px;
-  border-radius: 7px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text);
-  cursor: grab;
-  user-select: none;
-  border: 1.5px solid transparent;
+.rel-add-group-card {
+  border-radius: var(--radius); border: 2px dashed var(--border); min-height: 140px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; cursor: pointer; color: var(--text3);
+  font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
 }
-.rel-member-chip:hover { opacity: 0.85; }
-.rel-member-chip .rm-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 11px;
-  color: inherit;
-  opacity: 0.5;
-  padding: 0;
-  line-height: 1;
+.rel-add-group-card:hover, .rel-add-group-card:active {
+  border-color: var(--blue); color: var(--blue); background: var(--blue-light);
 }
-.rel-member-chip .rm-btn:hover { opacity: 1; }
+.rel-add-group-card .add-icon { font-size: 28px; }
 
-/* Add group column button */
-.rel-add-col {
-  width: 160px;
-  min-width: 160px;
-  border: 2px dashed var(--border);
-  border-radius: var(--radius);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--text3);
-  font-family: 'Nunito', sans-serif;
-  font-size: 13px;
-  font-weight: 800;
-  flex-direction: column;
-  gap: 6px;
-  transition: all 0.15s;
-  flex-shrink: 0;
-}
-.rel-add-col:hover { border-color: var(--blue); color: var(--blue); }
+.rel-rivals-content { display: flex; flex-direction: column; gap: 10px; }
 
-/* Rivals section inside modal */
-.rel-rivals-section {
-  flex-shrink: 0;
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 18px;
+.rel-add-rival-btn {
+  width: 100%; padding: 16px; border-radius: var(--radius);
+  border: 2px dashed #fecaca; background: #fff5f5;
+  font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800;
+  color: #dc2626; cursor: pointer; transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
 }
-.rel-rivals-title {
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text3);
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.rel-rival-chips { display: flex; flex-wrap: wrap; gap: 7px; min-height: 24px; }
-.rel-rival-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: #fee2e2;
-  border: 1.5px solid #fecaca;
-  font-size: 12px;
-  font-weight: 700;
-  color: #dc2626;
-}
-.rel-rival-chip button { background: none; border: none; cursor: pointer; color: #dc2626; font-size: 11px; padding: 0; opacity: 0.6; }
-.rel-rival-chip button:hover { opacity: 1; }
+[data-theme="dark"] .rel-add-rival-btn { background: #2d1111; border-color: #7f1d1d; }
+.rel-add-rival-btn:hover { background: #fee2e2; }
 
-/* Overlay dim */
-.rel-overlay { display: none; }
+.rel-rival-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px; border-radius: var(--radius);
+  background: var(--surface); border: 1.5px solid var(--border);
+  font-size: 15px; font-weight: 700; color: var(--text);
+}
+.rel-rival-row-del {
+  background: none; border: none; cursor: pointer;
+  font-size: 20px; color: var(--text3); padding: 4px; border-radius: 6px;
+  -webkit-tap-highlight-color: transparent;
+}
+.rel-rival-row-del:hover { color: var(--danger); }
 
-/* Rival picker modal */
+.rel-tabbar {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 72px;
+  background: var(--surface); border-top: 1.5px solid var(--border);
+  display: flex; align-items: stretch;
+  padding: 8px 16px; padding-bottom: max(8px, env(safe-area-inset-bottom)); gap: 8px;
+}
+.rel-tab-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; border: none; background: transparent;
+  font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800; color: var(--text3);
+  cursor: pointer; border-radius: var(--radius-sm);
+  transition: color 0.15s, background 0.15s; -webkit-tap-highlight-color: transparent; padding: 6px 4px;
+}
+.rel-tab-btn .tab-icon { font-size: 22px; line-height: 1; }
+.rel-tab-btn.active { color: var(--blue); background: var(--blue-light); }
+.rel-tab-btn.active.rivals { color: #dc2626; background: #fee2e2; }
+
 .rival-picker {
-  position: fixed;
-  inset: 0;
-  z-index: 400;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.4);
+  position: fixed; inset: 0; z-index: 400;
+  display: none; flex-direction: column; background: var(--bg);
 }
 .rival-picker.open { display: flex; }
-.rival-picker-card {
-  background: var(--surface);
-  border-radius: var(--radius);
-  border: 1.5px solid var(--border);
-  box-shadow: var(--shadow-lg);
-  padding: 24px;
-  width: 340px;
-  max-width: 90vw;
+.rival-picker-topbar {
+  display: flex; align-items: center; gap: 12px; padding: 0 20px; height: 60px;
+  background: var(--surface); border-bottom: 1.5px solid var(--border); flex-shrink: 0;
 }
-.rival-picker-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 14px; }
-.rival-picker-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+.rival-picker-title { flex: 1; font-size: 17px; font-weight: 900; color: var(--text); }
+.rival-picker-content {
+  flex: 1; overflow-y: auto; padding: 20px 16px; -webkit-overflow-scrolling: touch;
+}
+.rival-picker-hint {
+  font-size: 14px; color: var(--text2); font-weight: 600; margin-bottom: 16px;
+  padding: 12px 14px; background: var(--surface); border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+}
+.rival-picker-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px;
+}
 .rival-picker-chip {
-  padding: 6px 13px;
+  padding: 16px 10px; border-radius: var(--radius-sm);
+  border: 2px solid var(--border); background: var(--surface);
+  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; color: var(--text);
+  cursor: pointer; text-align: center; transition: all 0.12s;
+  -webkit-tap-highlight-color: transparent;
+}
+.rival-picker-chip:hover { border-color: #dc2626; color: #dc2626; background: #fee2e2; }
+.rival-picker-chip.selected { border-color: #dc2626; background: #fee2e2; color: #dc2626; font-weight: 900; }
+.rival-picker-footer {
+  padding: 16px; background: var(--surface); border-top: 1.5px solid var(--border);
+  display: flex; gap: 10px; flex-shrink: 0;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+}
+.rival-picker-footer button {
+  flex: 1; padding: 15px; border-radius: var(--radius-sm);
+  font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800;
+  cursor: pointer; border: none;
+}
+
+.rel-overlay { display: none; }
+.rel-pair-list, .rel-hint { display: none; }
+
+
+
+/* ── Attendance Mode ── */
+.att-bar {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.att-bar.active { display: flex; }
+.att-stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 4px 10px;
   border-radius: 999px;
+}
+.att-stat.present { background: #dcfce7; color: #15803d; }
+.att-stat.absent  { background: #fee2e2; color: #dc2626; }
+.att-stat.late    { background: #fef9c3; color: #a16207; }
+.att-stat.total   { background: var(--surface2); color: var(--text2); }
+.att-reset {
+  margin-left: auto;
+  padding: 5px 12px;
+  border-radius: 6px;
   border: 1.5px solid var(--border);
   background: var(--surface2);
   font-family: 'Nunito', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
   cursor: pointer;
-  transition: all 0.12s;
+  color: var(--text2);
 }
-.rival-picker-chip:hover { border-color: #dc2626; color: #dc2626; background: #fee2e2; }
-.rival-picker-chip.selected { border-color: #dc2626; background: #fee2e2; color: #dc2626; }
+.att-reset:hover { border-color: var(--danger); color: var(--danger); }
 
-.rel-pair-list { display: flex; flex-direction: column; gap: 6px; max-height: 180px; overflow-y: auto; }
-.rel-pair-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 7px 10px;
-  border-radius: 7px;
-  font-size: 13px;
-  font-weight: 700;
-  background: var(--surface2);
-  border: 1.5px solid var(--border);
+/* Cell attendance states */
+.seat-cell.att-present { background: #dcfce7 !important; border-color: #86efac !important; }
+.seat-cell.att-absent  { background: #fee2e2 !important; border-color: #fca5a5 !important; }
+.seat-cell.att-late    { background: #fef9c3 !important; border-color: #fde047 !important; }
+
+.att-badge {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  font-size: 10px;
+  line-height: 1;
 }
-.rel-pair-item .rel-type { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 800; }
-.rel-pair-item .rel-type.rival { background: #fee2e2; color: #dc2626; }
-.rel-pair-item .del-rel { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 14px; }
-.rel-pair-item .del-rel:hover { color: var(--danger); }
-.rel-hint { font-size: 12px; color: var(--text3); font-weight: 600; margin-bottom: 8px; }
+
+/* Attendance mode toggle button active state */
+.btn-att-active {
+  background: #2563eb !important;
+  color: white !important;
+  border-color: #2563eb !important;
+}
+
+@media print {
+  .att-bar { display: none !important; }
+  .seat-cell.att-present { background: #f0fff4 !important; }
+  .seat-cell.att-absent  { background: #fff5f5 !important; }
+  .seat-cell.att-late    { background: #fffbeb !important; }
+}
 
 /* Cell context menu */
 .cell-menu {
@@ -1249,8 +1224,9 @@ body {
   <div class="card gate-card">
     <div class="gate-logo">Lern</div>
     <div class="gate-tagline">Aura · Veda · Pact · Ayur · <strong style="color:var(--blue)">Lern</strong> — Built in KL.</div>
-    <div class="gate-title">Welcome, Teacher</div>
-    <div class="gate-desc">Enter your Gemini API key to get started. It's stored only in your browser and never sent anywhere except Google.</div>
+    <div class="gate-title">Unlock AI Features</div>
+    <div class="gate-desc">Add your free Gemini API key to unlock Lesson Planner, Report Marker, and Quiz Generator. Your key is stored only in your browser.</div>
+    <div id="gate-connected-badge" style="display:none;padding:10px 14px;background:#dcfce7;border:1.5px solid #86efac;border-radius:8px;font-size:13px;font-weight:800;color:#15803d;margin-bottom:8px;">✓ AI features unlocked</div>
     <div class="form-group">
       <label class="label">Gemini API Key</label>
       <div class="gate-input-wrap">
@@ -1260,10 +1236,16 @@ body {
     </div>
     <div id="gate-error" class="gate-error">That key doesn't seem to work. Double-check and try again.</div>
     <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;" onclick="validateKey()">
-      <span id="gate-btn-text">Unlock Lern →</span>
+      <span id="gate-btn-text">Connect API Key →</span>
     </button>
+    <div id="gate-remove-wrap" style="display:none;margin-top:8px;">
+      <button class="btn btn-secondary btn-lg" style="width:100%;justify-content:center;" onclick="removeApiKey()">Remove Key</button>
+    </div>
     <div class="gate-hint">
-      Don't have a key? <a href="https://aistudio.google.com/app/apikey" target="_blank">Get one free from Google AI Studio →</a>
+      Free from Google — <a href="https://aistudio.google.com/app/apikey" target="_blank">Get your key at AI Studio →</a>
+    </div>
+    <div style="margin-top:16px;text-align:center;">
+      <button onclick="showScreen('app');showPanel('dashboard')" style="background:none;border:none;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:var(--text3);cursor:pointer;text-decoration:underline;">← Back to app</button>
     </div>
   </div>
 </div>
@@ -1368,6 +1350,7 @@ body {
     <div class="nav-right">
       <button class="nav-btn" onclick="showPanel('dashboard')">🏠 Home</button>
       <button class="nav-btn" onclick="startOnboarding(true)">👤 Edit Profile</button>
+      <button class="nav-btn" id="nav-api-btn" onclick="openApiSettings()" title="Connect AI features" style="position:relative;">🔑 <span id="nav-api-label">Connect AI</span></button>
       <div class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
         <span id="theme-icon">🌙</span>
       </div>
@@ -1390,23 +1373,23 @@ body {
           <p>Arrange your classroom seating with a drag-and-drop grid. Add notes per student.</p>
           <div class="tool-card-badge">Planner</div>
         </div>
-        <div class="tool-card" style="--card-color:#059669" onclick="showPanel('plan')">
+        <div class="tool-card" id="card-plan" style="--card-color:#059669" onclick="requireAi('plan', 'Lesson Planner')">
           <span class="tool-card-icon">📋</span>
           <h3>Plan</h3>
           <p>Generate a full lesson plan from a topic and duration. Ready to print.</p>
-          <div class="tool-card-badge">AI</div>
+          <div class="tool-card-badge" id="badge-plan">AI</div>
         </div>
-        <div class="tool-card" style="--card-color:#d97706" onclick="showPanel('mark')">
+        <div class="tool-card" id="card-mark" style="--card-color:#d97706" onclick="requireAi('mark', 'Report Marker')">
           <span class="tool-card-icon">✏️</span>
           <h3>Mark</h3>
           <p>Write professional report card comments in seconds. Warm and formal.</p>
-          <div class="tool-card-badge">AI</div>
+          <div class="tool-card-badge" id="badge-mark">AI</div>
         </div>
-        <div class="tool-card" style="--card-color:#7c3aed" onclick="showPanel('quiz')">
+        <div class="tool-card" id="card-quiz" style="--card-color:#7c3aed" onclick="requireAi('quiz', 'Quiz Generator')">
           <span class="tool-card-icon">📝</span>
           <h3>Quiz</h3>
           <p>Generate ready-to-print worksheets and quizzes for any topic.</p>
-          <div class="tool-card-badge">AI</div>
+          <div class="tool-card-badge" id="badge-quiz">AI</div>
         </div>
       </div>
     </div>
@@ -1454,7 +1437,18 @@ body {
             <div class="seat-toolbar-sep"></div>
             <button class="btn btn-sm btn-danger" onclick="seatClearAll()">🗑</button>
             <button class="btn btn-sm btn-secondary" onclick="window.print()">🖨</button>
+            <div class="seat-toolbar-sep"></div>
+            <button class="btn btn-sm btn-secondary" id="att-toggle-btn" onclick="toggleAttendanceMode()" title="Attendance mode">📋 Attendance</button>
             <div class="seat-info" id="seat-info">5 × 6</div>
+          </div>
+
+          <!-- Attendance summary bar -->
+          <div class="att-bar" id="att-bar">
+            <span class="att-stat present">✓ <span id="att-count-present">0</span> Present</span>
+            <span class="att-stat absent">✗ <span id="att-count-absent">0</span> Absent</span>
+            <span class="att-stat late">⏱ <span id="att-count-late">0</span> Late</span>
+            <span class="att-stat total">👥 <span id="att-count-total">0</span> Total</span>
+            <button class="att-reset" onclick="resetAttendance()">Reset</button>
           </div>
 
           <div class="seat-grid-wrap">
@@ -1784,50 +1778,80 @@ body {
   </footer>
 </div>
 
-<!-- Groups & Rivals kanban modal -->
+<!-- Groups & Rivals — immersive full-screen modal -->
 <div class="rel-modal" id="rel-panel">
-  <div class="rel-modal-header">
-    <div class="rel-modal-title">👥 Friend Groups &amp; Rivals</div>
-    <button class="rel-modal-close" onclick="closeRelPanel()">✕ Close</button>
+  <!-- Top bar -->
+  <div class="rel-topbar">
+    <div class="rel-topbar-title" id="rel-topbar-title">👥 Friend Groups</div>
+    <button class="rel-topbar-close" onclick="closeRelPanel()">✕</button>
   </div>
-  <div class="rel-modal-body">
 
-    <!-- Unassigned pool -->
-    <div class="rel-pool">
-      <div class="rel-pool-title">Unassigned students — drag into a group</div>
-      <div class="rel-pool-chips" id="rel-pool-chips"></div>
+  <!-- Scrollable content -->
+  <div class="rel-content" id="rel-content">
+
+    <!-- GROUPS TAB -->
+    <div id="rel-groups-tab">
+      <div class="rel-pool-section">
+        <div class="rel-section-label">Unassigned — drag into a group</div>
+        <div class="rel-pool-chips" id="rel-pool-chips"></div>
+      </div>
+      <div class="rel-section-label">Friend Groups</div>
+      <div class="rel-groups-grid" id="rel-groups-grid"></div>
     </div>
 
-    <!-- Kanban columns -->
-    <div class="rel-kanban" id="rel-kanban">
-      <div class="rel-add-col" onclick="addFriendGroup()">
-        <span style="font-size:22px;">＋</span>
-        <span>New Group</span>
-      </div>
+    <!-- RIVALS TAB -->
+    <div id="rel-rivals-tab" style="display:none;">
+      <div class="rel-rivals-content" id="rel-rivals-content"></div>
     </div>
 
-    <!-- Rivals -->
-    <div class="rel-rivals-section">
-      <div class="rel-rivals-title">
-        <span>⚡ Rivals — keep these students apart</span>
-        <button onclick="openRivalPicker()" style="padding:5px 12px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface2);font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;color:var(--text2);">＋ Add Rival Pair</button>
-      </div>
-      <div class="rel-rival-chips" id="rel-rival-chips">
-        <span style="color:var(--text3);font-size:12px;font-weight:600;">None set.</span>
-      </div>
-    </div>
+  </div>
 
+  <!-- Bottom tab bar -->
+  <div class="rel-tabbar">
+    <button class="rel-tab-btn active" id="rel-tab-groups" onclick="setRelTab('groups')">
+      <span class="tab-icon">👥</span>
+      <span>Friend Groups</span>
+    </button>
+    <button class="rel-tab-btn rivals" id="rel-tab-rivals" onclick="setRelTab('rivals')">
+      <span class="tab-icon">⚡</span>
+      <span>Rivals</span>
+    </button>
   </div>
 </div>
 
-<!-- Rival picker modal -->
+<!-- Rival picker — full screen -->
 <div class="rival-picker" id="rival-picker">
-  <div class="rival-picker-card">
-    <div class="rival-picker-title">⚡ Pick two students who are rivals</div>
+  <div class="rival-picker-topbar">
+    <div class="rival-picker-title">⚡ Mark as Rivals</div>
+    <button class="rel-topbar-close" onclick="closeRivalPicker()">✕</button>
+  </div>
+  <div class="rival-picker-content">
+    <div class="rival-picker-hint">Tap two students to mark them as rivals. The seating optimizer will keep them apart.</div>
     <div class="rival-picker-grid" id="rival-picker-grid"></div>
-    <div style="display:flex;gap:8px;">
-      <button onclick="closeRivalPicker()" style="flex:1;padding:9px;border-radius:7px;border:1.5px solid var(--border);background:var(--surface2);font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;color:var(--text2);">Cancel</button>
-      <button onclick="confirmRivalPick()" style="flex:1;padding:9px;border-radius:7px;border:none;background:#dc2626;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;color:white;">Mark as Rivals</button>
+  </div>
+  <div class="rival-picker-footer">
+    <button onclick="closeRivalPicker()" style="background:var(--surface2);color:var(--text2);">Cancel</button>
+    <button onclick="confirmRivalPick()" style="background:#dc2626;color:white;">Mark as Rivals</button>
+  </div>
+</div>
+
+<!-- AI Unlock Modal -->
+<div class="modal-overlay" id="ai-unlock-modal" onclick="closeAiUnlock(event)" style="display:none;align-items:center;justify-content:center;">
+  <div class="modal" style="max-width:400px;padding:32px 28px;text-align:center;" onclick="event.stopPropagation()">
+    <div style="font-size:40px;margin-bottom:12px;">✨</div>
+    <div style="font-size:20px;font-weight:900;color:var(--text);margin-bottom:8px;">This is an AI feature</div>
+    <div style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:24px;line-height:1.5;">
+      Add your free Gemini API key to unlock <strong id="ai-unlock-feature-name">this feature</strong>.
+      Takes 30 seconds — the key never leaves your device.
+    </div>
+    <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;margin-bottom:10px;" onclick="goToApiSettings()">
+      🔑 Connect API Key →
+    </button>
+    <button class="btn btn-secondary" style="width:100%;justify-content:center;" onclick="document.getElementById('ai-unlock-modal').style.display='none'">
+      Maybe later
+    </button>
+    <div style="margin-top:16px;font-size:12px;color:var(--text3);font-weight:600;">
+      Free from Google AI Studio · Stored only in your browser
     </div>
   </div>
 </div>
@@ -1890,9 +1914,8 @@ window.addEventListener('load', () => {
   const savedTheme = localStorage.getItem('lern-theme') || 'light';
   applyTheme(savedTheme);
 
-  // Key
+  // Key — optional, only needed for AI features
   apiKey = localStorage.getItem('lern-api-key') || '';
-  if (!apiKey) { showScreen('gate'); return; }
 
   // Seat data
   const savedSeat = localStorage.getItem('lern-seat');
@@ -1920,6 +1943,74 @@ window.addEventListener('load', () => {
     }
   });
 });
+
+
+// ═══════════════════════════════════════
+// ATTENDANCE
+// ═══════════════════════════════════════
+let attendanceMode = false;
+// attendanceData: { [seatKey]: 'present' | 'absent' | 'late' }
+let attendanceData = {};
+const ATT_CYCLE = [null, 'present', 'absent', 'late'];
+const ATT_EMOJI = { present: '✓', absent: '✗', late: '⏱' };
+
+function loadAttendance() {
+  try {
+    const s = localStorage.getItem('lern-attendance');
+    attendanceData = s ? JSON.parse(s) : {};
+  } catch { attendanceData = {}; }
+}
+
+function saveAttendance() {
+  localStorage.setItem('lern-attendance', JSON.stringify(attendanceData));
+}
+
+function toggleAttendanceMode() {
+  attendanceMode = !attendanceMode;
+  const btn = document.getElementById('att-toggle-btn');
+  const bar = document.getElementById('att-bar');
+  if (attendanceMode) {
+    btn.classList.add('btn-att-active');
+    bar.classList.add('active');
+  } else {
+    btn.classList.remove('btn-att-active');
+    bar.classList.remove('active');
+  }
+  renderSeatGrid();
+}
+
+function cycleAttendance(k) {
+  const cur = attendanceData[k] || null;
+  const idx = ATT_CYCLE.indexOf(cur);
+  const next = ATT_CYCLE[(idx + 1) % ATT_CYCLE.length];
+  if (next === null) delete attendanceData[k];
+  else attendanceData[k] = next;
+  saveAttendance();
+  updateAttendanceSummary();
+}
+
+function updateAttendanceSummary() {
+  const named = [];
+  for (let r = 0; r < seatRows; r++)
+    for (let c = 0; c < seatCols; c++) {
+      const k = seatKey(r, c);
+      if (seatData[k]?.name) named.push(k);
+    }
+  const counts = { present: 0, absent: 0, late: 0 };
+  named.forEach(k => { const s = attendanceData[k]; if (s) counts[s]++; });
+  document.getElementById('att-count-present').textContent = counts.present;
+  document.getElementById('att-count-absent').textContent  = counts.absent;
+  document.getElementById('att-count-late').textContent    = counts.late;
+  document.getElementById('att-count-total').textContent   = named.length;
+}
+
+function resetAttendance() {
+  if (!confirm('Clear today\'s attendance?')) return;
+  attendanceData = {};
+  saveAttendance();
+  renderSeatGrid();
+  updateAttendanceSummary();
+}
 
 // ═══════════════════════════════════════
 // SCREENS
@@ -2085,11 +2176,14 @@ function launchApp() {
   prefillToolFields();
   loadStudentNames();
   loadRelationships();
+  loadAttendance();
   renderSeatGrid();
   showScreen('app');
   showPanel('dashboard');
   // Background quiz cache
   setTimeout(backgroundCacheQuizzes, 2000);
+  // Reflect API key state in UI
+  updateAiUi();
 }
 
 function updateDashboard() {
@@ -2176,7 +2270,9 @@ function createSeatCell(r, c) {
   const k = seatKey(r, c);
   const d = seatData[k] || {};
   const cell = document.createElement('div');
-  cell.className = 'seat-cell' + (d.name ? ' has-name' : '') + (d.note ? ' has-note' : '');
+  const attState = attendanceData[k];
+  const attClass = attState ? ' att-' + attState : '';
+  cell.className = 'seat-cell' + (d.name ? ' has-name' : '') + (d.note ? ' has-note' : '') + attClass;
   cell.dataset.r = r;
   cell.dataset.c = c;
   cell.draggable = !!d.name;
@@ -2195,9 +2291,32 @@ function createSeatCell(r, c) {
 
   cell.appendChild(nameSpan);
   cell.appendChild(input);
+  // Attendance badge
+  if (attendanceData[k] && d.name) {
+    const badge = document.createElement('span');
+    badge.className = 'att-badge';
+    badge.textContent = ATT_EMOJI[attendanceData[k]];
+    cell.appendChild(badge);
+  }
 
-  // Click to edit (if no name dragged in)
+  // Click: attendance mode cycles state; otherwise edit
   cell.addEventListener('click', (e) => {
+    if (attendanceMode) {
+      if (!seatData[k]?.name) return; // only mark named cells
+      cycleAttendance(k);
+      // Update this cell visually without full re-render
+      cell.classList.remove('att-present', 'att-absent', 'att-late');
+      const badge = cell.querySelector('.att-badge');
+      const st = attendanceData[k];
+      if (st) {
+        cell.classList.add('att-' + st);
+        if (badge) badge.textContent = ATT_EMOJI[st];
+        else { const b = document.createElement('span'); b.className = 'att-badge'; b.textContent = ATT_EMOJI[st]; cell.appendChild(b); }
+      } else {
+        if (badge) badge.remove();
+      }
+      return;
+    }
     if (cell.classList.contains('editing')) return;
     startCellEdit(cell, r, c, nameSpan, input);
   });
@@ -2826,13 +2945,13 @@ function confirmRivalPick() {
   const exists = rivals.find(r => (r.a===a&&r.b===b)||(r.a===b&&r.b===a));
   if (!exists) { rivals.push({ a, b }); saveRelData(); }
   closeRivalPicker();
-  renderRivalChips();
+  renderRivalsTab();
 }
 
 function deleteRival(i) {
   rivals.splice(i, 1);
   saveRelData();
-  renderRivalChips();
+  renderRivalsTab();
 }
 
 // ── Stubs so old call sites don't break ──
